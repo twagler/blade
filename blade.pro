@@ -5,18 +5,20 @@ CONFIG -= qt
 CONFIG += c++11
 LIBS += -pthread
 
-SOURCES += \
+SOURCES += main.cpp \
     CalcWaypoint.cpp \
-    main.cpp \
+    gps.cpp \
+    motordriver.cpp \
     mower.cpp \
     Print.cpp \
     Ultra.cpp \
-    WaypointNavigation.cpp \
-    gps.cpp
+    WaypointNavigation.cpp
+
+OTHER_FILES += \
+    README.md
 
 HEADERS += \
-    mower.h \
-    gps.h
-
-OTHER_FILES +=
+    gps.h \
+    motordriver.h \
+    mower.h
 

@@ -4,11 +4,9 @@
 #define Kp        0.10
 #define Kd        0.10
 #define Ki        0.10
-#define MIN_SPEED -127
-#define MAX_SPEED 127
 #define ARRIVED   .00005
 
-void WaypointNavigation(GPS gps) {
+char WaypointNavigation(GPS gps) {
 
     static float distance   = 0;
     static float DeltaXgoal = 0;
@@ -19,9 +17,9 @@ void WaypointNavigation(GPS gps) {
 
     static int wayindex = 0;
 
-    float difference=0;
-    float derivative=0;
-    float adjustment=0;
+    char difference=0;
+    char derivative=0;
+    char adjustment=0;
 
     float DXpath;
     float DYpath;
@@ -32,18 +30,16 @@ void WaypointNavigation(GPS gps) {
     std::cout << "Traveling to: " << LATwaypoint[wayindex+1] << ", " << LONwaypoint[wayindex+1] << "\r\n";
     //DEBUG
 
-    DXpath = LATwaypoint[wayindex+1] - gps.getLatitude();
-    DYpath = LONwaypoint[wayindex+1] - gps.getLongitude();
+    DXpath = LATwaypoint[wayindex+1] - gps.getLatitude();  //not correct
+    DYpath = LONwaypoint[wayindex+1] - gps.getLongitude(); //not correct
 
-    distance = sqrt((DXpath*DXpath) + (DYpath*DYpath));
+    distance = sqrt((DXpath*DXpath) + (DYpath*DYpath));    //earth is flat?
     std::cout << "Distance to target: " << distance << "\r\n";
 
     if (distance < ARRIVED)  //arrived @ waypoint
     {
         CalcWaypoint();
         wayindex++;
-        wayindex = wayindex%8;             //memory saver for 8bit MCU. we can probably do away with this
-
         DeltaXgoal = LATwaypoint[wayindex+1] - LATwaypoint[wayindex];
         DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
 
@@ -54,27 +50,14 @@ void WaypointNavigation(GPS gps) {
 
         difference = ((DeltaXgoal * (LATwaypoint[wayindex] - gps.getLongitude()))
                       -(DeltaYgoal * (LONwaypoint[wayindex] - gps.getLatitude()))) / PathLength;
+
         derivative = difference - lasterror;
         integral = integral + (difference+lasterror)/2;
+        lasterror = difference;
         
         adjustment = Kp*difference+Kd*derivative+Ki*integral;    //PID
-
-        lasterror = difference;
-        leftspeed = leftspeed + adjustment;
-        rightspeed = rightspeed + adjustment;
-       
-       
-        if (leftspeed < MIN_SPEED)                 //cap min motor speed
-            leftspeed = MIN_SPEED;
-        else if (leftspeed>MAX_SPEED)
-            leftspeed = MAX_SPEED;                  //cap max motor speed
-
-        if (rightspeed<MIN_SPEED)
-            rightspeed = MIN_SPEED;
-        else if (rightspeed>MAX_SPEED)
-            rightspeed = MAX_SPEED;
-
     }
+    return adjustment;
 }
 
 

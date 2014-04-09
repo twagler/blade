@@ -8,7 +8,7 @@ public:
     float getLatitude() const;
     float getLongitude() const;
     int getTime() const;
-
+    float distance(GPS, GPS);
 
 private:
     float myLatitude;
