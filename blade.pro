@@ -12,13 +12,13 @@ SOURCES += main.cpp \
     mower.cpp \
     Print.cpp \
     Ultra.cpp \
-    WaypointNavigation.cpp
-
-OTHER_FILES += \
-    README.md
+    WaypointNavigation.cpp \
+    gps.cpp \
+    motordriver.cpp
 
 HEADERS += \
     gps.h \
-    motordriver.h \
-    mower.h
+    motordriver.h
+
+OTHER_FILES +=
 
