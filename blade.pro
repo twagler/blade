@@ -16,7 +16,9 @@ SOURCES += main.cpp \
 
 HEADERS += \
     gps.h \
-    motordriver.h
+    motordriver.h \
+    mower.h
 
-OTHER_FILES +=
+OTHER_FILES += \
+    README.md
 
