@@ -14,7 +14,6 @@ int main() {
 
     while (1){
 
-//        rangeSensors.
         cin >> lat >> trash >> lon >> trash >> time;
         GPS gps(lat, lon, time);
         adjustment = WaypointNavigation(gps);

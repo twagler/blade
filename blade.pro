@@ -8,12 +8,10 @@ LIBS += -pthread
 SOURCES += main.cpp \
     CalcWaypoint.cpp \
     gps.cpp \
-    motordriver.cpp \
     mower.cpp \
     Print.cpp \
     Ultra.cpp \
     WaypointNavigation.cpp \
-    gps.cpp \
     motordriver.cpp
 
 HEADERS += \
