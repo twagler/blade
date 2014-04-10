@@ -1,10 +1,15 @@
 #include "mower.h"
+#include <chrono>
+#include <thread>
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
 
 void TriggerUltras(unsigned char channel) {
 
     //pull whichever IO pin low for at least 20usec
 }
-
 
 void UpdateUltraData()
 {
@@ -19,8 +24,8 @@ void UpdateUltraData()
             //std::cin >> "R" >> value;
             value = 0;//replace 0 with whatever is read
             uSonic[i] = (uSonic[i]*3+value)/4;  //running average
-            //sleep(.5);
-            //cout << "going again...\r\n";
+            cout << "TEST\r\n";
+            this_thread::sleep_for(chrono::milliseconds(500));
         }
 
 }

@@ -2,6 +2,10 @@
 
 MotorDriver::MotorDriver()
 {
+    /*At some point we need to add an initialization argument that says
+     * which port the Sabertooth motor driver is attached to.
+     * We also need to properly initialize the baud rate, partiy, etc.
+     */
     myLeftSpeed = 0;
     myRightSpeed = 0;
     myEnable = 0;
