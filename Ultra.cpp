@@ -17,6 +17,7 @@ void UpdateUltraData()
     unsigned char value;
 
     while(1)
+    {
         for(unsigned char i=0;i<NUM_ULTRAS;i++)
         {
             TriggerUltras(i);
@@ -24,8 +25,9 @@ void UpdateUltraData()
             //std::cin >> "R" >> value;
             value = 0;//replace 0 with whatever is read
             uSonic[i] = (uSonic[i]*3+value)/4;  //running average
-            cout << "TEST\r\n";
+
             this_thread::sleep_for(chrono::milliseconds(500));
         }
-
+        cout << "Refreshed Sensors...\r\n";
+    }
 }

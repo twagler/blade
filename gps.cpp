@@ -2,6 +2,13 @@
 #include <math.h>
 #define d2r (M_PI / 180.0)
 
+GPS::GPS()
+{
+    myLatitude = 0;
+    myLongitude = 0;
+    myTime = 0;
+}
+
 GPS::GPS(float lat,float lon,int tim)
 {
     myLatitude = lat;
@@ -21,6 +28,19 @@ int GPS::getTime() const
 {
     return myTime;
 }
+void GPS::setLatitude(float lat)
+{
+    myLatitude = lat;
+}
+void GPS::setLongitude(float lon)
+{
+    myLongitude = lon;
+}
+void GPS::setTime(int time)
+{
+    myTime = time;
+}
+
 float GPS::distance(GPS one, GPS two)
 {
     double dlong = (two.getLongitude() - one.getLongitude())*d2r;
