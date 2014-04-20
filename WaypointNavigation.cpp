@@ -1,9 +1,10 @@
-#include "mower.h"
-#include <math.h>
+using namespace std;
 
-#define Kp        0.10
-#define Kd        0.10
-#define Ki        0.10
+#include "mower.h"
+
+#define Kp        0.100
+#define Kd        0.005
+#define Ki        0.001
 #define ARRIVED   .00005
 
 void WaypointNavigation() {
@@ -19,8 +20,8 @@ void WaypointNavigation() {
 
     int wayindex = 0;
 
-    char difference=0;
-    char derivative=0;
+    int difference=0;
+    int derivative=0;
 
     float DXpath;
     float DYpath;
@@ -33,10 +34,11 @@ void WaypointNavigation() {
         cv_gps.wait(lk_gps);
 
         //DEBUG
-        cout << "Received: " << gps.getLatitude() << "," << gps.getLongitude() << "," << gps.getTime() << "\r\n";
         cout << "Current wayindex: " << wayindex << "\r\n";
-        cout << "Currently at: " << gps.getLatitude() << ", " << gps.getLongitude() << "\r\n";
-        cout << "Traveling to: " << LATwaypoint[wayindex+1] << ", " << LONwaypoint[wayindex+1] << "\r\n";
+        cout << "Currently at: " << gps.getLatitude() << ", " <<
+                gps.getLongitude() << "\r\n";
+        cout << "Traveling to: " << LATwaypoint[wayindex+1] << ", " <<
+                LONwaypoint[wayindex+1] << "\r\n";
         //DEBUG
 
         DXpath = LATwaypoint[wayindex+1] - gps.getLatitude();  //not correct

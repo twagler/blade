@@ -1,10 +1,6 @@
-#include "mower.h"
-#include <chrono>
-#include <thread>
-#include <iostream>
-#include <stdio.h>
-
 using namespace std;
+
+#include "mower.h"
 
 void TriggerUltras(unsigned char channel) {
 

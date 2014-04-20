@@ -1,7 +1,7 @@
 using namespace std;
+
 #include "mower.h"
 #include "motordriver.h"
-
 
 MotorDriver::MotorDriver()
 {
@@ -23,10 +23,10 @@ void MotorDriver::sendSpeeds()
 {
     struct SabertoothPacket
     {
-        char address;
-        char command;
-        char data;
-        char checksum;
+        unsigned char address;
+        unsigned char command;
+        unsigned char data;
+        unsigned char checksum;
     };
 
     SabertoothPacket Packet_Left;
@@ -64,14 +64,20 @@ void MotorDriver::sendSpeeds()
     Packet_Right.checksum = (Packet_Right.address + Packet_Right.command
                              + Packet_Right.data) & 0b01111111;
 
-    cout << Packet_Left.address;
-    cout << Packet_Left.command;
-    cout << Packet_Left.data;
-    cout << Packet_Left.checksum;
-    cout << Packet_Right.address;
-    cout << Packet_Right.command;
-    cout << Packet_Right.data;
-    cout << Packet_Right.checksum;
+    /*
+    //DEBUG
+    cout << "Left Packet... ";
+    cout << (int)Packet_Left.address << ",";
+    cout << (int)Packet_Left.command << ",";
+    cout << (int)Packet_Left.data << ",";
+    cout << (int)Packet_Left.checksum << endl;
+    cout << "Right Packet... ";
+    cout << (int)Packet_Right.address << ",";
+    cout << (int)Packet_Right.command << ",";
+    cout << (int)Packet_Right.data << ",";
+    cout << (int)Packet_Right.checksum << endl;
+    //DEBUG
+    */
 }
 
 void MotorDriver::setMotorEnable(bool status)

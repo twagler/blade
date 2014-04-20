@@ -6,6 +6,7 @@ using namespace std;
 #include <condition_variable>
 #include <thread>
 #include <string.h>
+#include <math.h>
 #include "gps.h"
 #include "motordriver.h"
 
