@@ -49,7 +49,7 @@ void SetSpeeds()
     while(1){
 
         unique_lock<mutex> lk_drive(drive_lock);
-        cv_gps.wait(lk_drive);
+        cv_drive.wait(lk_drive);
 
         leftspeed = targetspeed + adjustment;
         rightspeed = targetspeed - adjustment;
