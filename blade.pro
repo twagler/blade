@@ -21,5 +21,6 @@ HEADERS += \
     mower.h
 
 OTHER_FILES += \
-    README.md
+    README.md \
+    input.txt
 
