@@ -1,16 +1,18 @@
 #ifndef MOTORDRIVER_H
 #define MOTORDRIVER_H
 
-#define MIN_SPEED -126
-#define MAX_SPEED  126
+#define SABERTOOTH_ADDRESS 130
 
 class MotorDriver
 {
 public:
     MotorDriver();
-    void SetSpeeds(char, char);
-    void SendSpeeds(char, char);
-    void SetMotorEnable(bool);
+    void setSpeeds(char, char);
+    void sendSpeeds();
+    void setMotorEnable(bool);
+    char getLeftSpeed();
+    char getRightSpeed();
+    bool getEnable();
 
 private:
     char myLeftSpeed;

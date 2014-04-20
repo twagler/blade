@@ -11,6 +11,12 @@ int rightspeed;
 int uSonic[NUM_ULTRAS];
 
 mutex gps_lock;
-bool ready = false;
+condition_variable cv_gps;
 GPS gps;
+
+mutex drive_lock;
+condition_variable cv_drive;
+
+bool first = true;
 char adjustment;
+char targetspeed;

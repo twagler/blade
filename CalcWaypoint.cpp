@@ -21,5 +21,6 @@ void CalcWaypoint()
     //if moving left right
             //LATwaypoint[incwaypoint(2)]=LATwaypoint[incwaypoint(1)];
             //LONwaypoint[incwaypoint(2)]=LONwaypoint[decwaypoint(1)];
-            
+
+
 }

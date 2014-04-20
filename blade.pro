@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     Print.cpp \
     Ultra.cpp \
     WaypointNavigation.cpp \
-    motordriver.cpp
+    motordriver.cpp \
+    serial.cpp
 
 HEADERS += \
     gps.h \

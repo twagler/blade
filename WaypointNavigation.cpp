@@ -25,26 +25,27 @@ void WaypointNavigation() {
     float DXpath;
     float DYpath;
 
+    bool first = true;
+
     while(1)
     {
-        while(!ready);
-
-        gps_lock.lock();
-        cout << "Received: " << gps.getLatitude() << "," << gps.getLongitude() << "," << gps.getTime() << "\r\n";
+        unique_lock<mutex> lk_gps(gps_lock);
+        cv_gps.wait(lk_gps);
 
         //DEBUG
-        std::cout << "Current wayindex: " << wayindex << "\r\n";
-        std::cout << "Currently at: " << gps.getLatitude() << ", " << gps.getLongitude() << "\r\n";
-        std::cout << "Traveling to: " << LATwaypoint[wayindex+1] << ", " << LONwaypoint[wayindex+1] << "\r\n";
+        cout << "Received: " << gps.getLatitude() << "," << gps.getLongitude() << "," << gps.getTime() << "\r\n";
+        cout << "Current wayindex: " << wayindex << "\r\n";
+        cout << "Currently at: " << gps.getLatitude() << ", " << gps.getLongitude() << "\r\n";
+        cout << "Traveling to: " << LATwaypoint[wayindex+1] << ", " << LONwaypoint[wayindex+1] << "\r\n";
         //DEBUG
 
         DXpath = LATwaypoint[wayindex+1] - gps.getLatitude();  //not correct
         DYpath = LONwaypoint[wayindex+1] - gps.getLongitude(); //not correct
 
         distance = sqrt((DXpath*DXpath) + (DYpath*DYpath));    //earth is flat? (close enough)
-        std::cout << "Distance to target: " << distance << "\r\n";
+        cout << "Distance to target: " << distance << "\r\n";
 
-        if (distance < ARRIVED)  //arrived @ waypoint
+        if (distance < ARRIVED || first)  //arrived @ waypoint
         {
             CalcWaypoint();
             wayindex++;
@@ -52,9 +53,11 @@ void WaypointNavigation() {
             DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
 
             PathLength = sqrt((DeltaXgoal*DeltaXgoal) + (DeltaYgoal*DeltaYgoal));
+            first = false;
         }
 
-        else { //Travel toward waypoint
+        else //Travel toward waypoint
+        {
 
             difference = ((DeltaXgoal * (LATwaypoint[wayindex] - gps.getLongitude()))
                           -(DeltaYgoal * (LONwaypoint[wayindex] - gps.getLatitude()))) / PathLength;
@@ -63,10 +66,14 @@ void WaypointNavigation() {
             integral = integral + (difference+lasterror)/2;
             lasterror = difference;
 
+            drive_lock.lock();
+
             adjustment = Kp*difference+Kd*derivative+Ki*integral;    //PID
+
+            drive_lock.unlock();
+            cv_drive.notify_one();
         }
-        ready=false;
-        gps_lock.unlock();
+        lk_gps.unlock();
     }
 }
 

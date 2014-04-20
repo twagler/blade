@@ -1,4 +1,7 @@
+using namespace std;
+#include "mower.h"
 #include "motordriver.h"
+
 
 MotorDriver::MotorDriver()
 {
@@ -10,39 +13,83 @@ MotorDriver::MotorDriver()
     myRightSpeed = 0;
     myEnable = 0;
 }
-void MotorDriver::SetSpeeds(char adjustment, char targetspeed)
+void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
 {
-    char leftspeed, rightspeed;
-    leftspeed = targetspeed + adjustment;
-    rightspeed = targetspeed - adjustment;
+    myLeftSpeed = leftspeed;
+    myRightSpeed = rightspeed;
+}
 
-
-    if (leftspeed < MIN_SPEED)                 //cap min motor speed
-        leftspeed = MIN_SPEED;
-    else if (leftspeed>MAX_SPEED)
-        leftspeed = MAX_SPEED;                  //cap max motor speed
-
-    if (rightspeed<MIN_SPEED)
-        rightspeed = MIN_SPEED;
-    else if (rightspeed>MAX_SPEED)
-        rightspeed = MAX_SPEED;
-
-    if(this->myEnable)
+void MotorDriver::sendSpeeds()
+{
+    struct SabertoothPacket
     {
-        this->myLeftSpeed = leftspeed;
-        this->myRightSpeed = rightspeed;
+        char address;
+        char command;
+        char data;
+        char checksum;
+    };
+
+    SabertoothPacket Packet_Left;
+    SabertoothPacket Packet_Right;
+
+    Packet_Left.address = SABERTOOTH_ADDRESS;
+    Packet_Right.address = SABERTOOTH_ADDRESS;
+
+    //send leftspeed
+    if(myLeftSpeed >=0)  //drive forward
+    {
+        Packet_Left.command = 0;
+        Packet_Left.data = myLeftSpeed;
+    }
+    else //drive backward
+    {
+        Packet_Left.command = 1;
+        Packet_Left.data = abs(myLeftSpeed);
+
+    }
+    if(myRightSpeed >=0) //drive forward
+    {
+        Packet_Right.command = 4;
+        Packet_Right.data = myRightSpeed;
+    }
+    else //drive backward
+    {
+        Packet_Right.command = 5;
+        Packet_Right.data = abs(myRightSpeed);
     }
 
+    Packet_Left.checksum = (Packet_Left.address + Packet_Left.command
+                            + Packet_Left.data) & 0b01111111;
+
+    Packet_Right.checksum = (Packet_Right.address + Packet_Right.command
+                             + Packet_Right.data) & 0b01111111;
+
+    cout << Packet_Left.address;
+    cout << Packet_Left.command;
+    cout << Packet_Left.data;
+    cout << Packet_Left.checksum;
+    cout << Packet_Right.address;
+    cout << Packet_Right.command;
+    cout << Packet_Right.data;
+    cout << Packet_Right.checksum;
 }
 
-void MotorDriver::SendSpeeds(char leftspeed, char rightspeed)
-{
-    //write leftspeed  to Sabertooth
-    //write rightspeed to Sabertooth
-
-}
-
-void MotorDriver::SetMotorEnable(bool status)
+void MotorDriver::setMotorEnable(bool status)
 {
     this->myEnable = status;
+}
+
+char MotorDriver::getLeftSpeed()
+{
+    return myLeftSpeed;
+}
+
+char MotorDriver::getRightSpeed()
+{
+    return myRightSpeed;
+}
+
+bool MotorDriver::getEnable()
+{
+    return myEnable;
 }
