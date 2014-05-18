@@ -9,10 +9,14 @@ using namespace std;
 #include <math.h>
 #include "gps.h"
 #include "motordriver.h"
+#include "joystick.h"
 
 #define NUM_ULTRAS 5
 #define MIN_SPEED -126
 #define MAX_SPEED  126
+
+#define AUTONOMOUS  0
+#define MANUAL      1
 
 void UpdateUltraData(void);
 void WaypointNavigation(void);
@@ -21,6 +25,7 @@ void Print(GPS);
 void SetSpeeds();
 void ReadGPS();
 void WriteGPS();
+void JoystickTest();
 
 extern int uSonic[];
 

@@ -21,9 +21,8 @@ void UpdateUltraData()
             //std::cin >> "R" >> value;
             value = 0;//replace 0 with whatever is read
             uSonic[i] = (uSonic[i]*3+value)/4;  //running average
-
-            this_thread::sleep_for(chrono::milliseconds(500));
         }
+        this_thread::sleep_for(chrono::milliseconds(500));
         cout << "Refreshed Sensors...\r\n";
     }
 }
