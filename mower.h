@@ -10,6 +10,7 @@ using namespace std;
 #include "gps.h"
 #include "motordriver.h"
 #include "joystick.h"
+#include "controlserver.h"
 
 #define NUM_ULTRAS 5
 #define MIN_SPEED -126
@@ -26,6 +27,7 @@ void SetSpeeds();
 void ReadGPS();
 void WriteGPS();
 void JoystickTest();
+void ControlSwitcher();
 
 extern int uSonic[];
 
@@ -39,7 +41,11 @@ extern GPS gps;
 extern mutex drive_lock;
 extern condition_variable cv_drive;
 
+extern MotorDriver motors;
+
 extern char adjustment;
 extern char targetspeed;
+
+extern bool Autonomous;
 
 

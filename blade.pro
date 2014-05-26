@@ -15,13 +15,15 @@ SOURCES += main.cpp \
     motordriver.cpp \
     serial.cpp \
     joystick.cpp \
-    ManualControl.cpp
+    ManualControl.cpp \
+    controlserver.cpp
 
 HEADERS += \
     gps.h \
     motordriver.h \
     mower.h \
-    joystick.h
+    joystick.h \
+    controlserver.h
 
 OTHER_FILES += \
     README.md \

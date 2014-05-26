@@ -4,6 +4,7 @@ using namespace std;
 
 void JoystickTest()
 {
+    printf("Starting Joystick thread...\r\n");
 
     Joystick joystick(0);
     // Ensure that it was found and that we can use it
@@ -13,14 +14,13 @@ void JoystickTest()
         //exit(1);
     }
 
-    MotorDriver motors;
+
     motors.setMotorEnable(true);
 
     char leftspeed, rightspeed;
-
-    while (true)
+    JoystickEvent event;
+    while (!Autonomous)
     {
-        JoystickEvent event;
         if (joystick.sample(&event))
         {
             if (event.isButton() && !event.isInitialState())
@@ -28,26 +28,28 @@ void JoystickTest()
                 switch(event.number)
                 {
                 case PS:
-                    printf("Toggling Manual/Autonomous\r\n");
+                    if(event.value==0)
+                        Autonomous = 1;
+                    printf("PS is: ");
                     break;
                 case TRIANGLE:
-                    printf("Toggling Blades ON/OFF\r\n");
+                    printf("Triangle is: ");
                     break;
                 case CIRCLE:
-                    printf("You hit circle\r\n");
+                    printf("Circle is: ");
                     break;
                 case SQUARE:
-                    printf("You hit square\r\n");
+                    printf("Square is: ");
                     break;
                 case X:
-                    printf("You hit x\r\n");
+                    printf("X is: ");
                     break;
                 default:
 
-                    printf("Button %u is %s\n", event.number,
-                           event.value == 0 ? "up" : "down");
+                    printf("Button %u is: ", event.number);
                     break;
                 }
+                printf("%s\r\n", event.value == 0 ? "up" : "down");
             }
             //tie left wheel to axis 1 and right wheel to axis 3
             else if (event.isAxis() && !event.isInitialState() &&
@@ -63,7 +65,6 @@ void JoystickTest()
                     break;
                 default:
                     break;
-
                 }
 
                 //BUG WORKAROUND
@@ -79,7 +80,9 @@ void JoystickTest()
                     printf("Speeds: (%i,%i)\r\n",
                            (int)leftspeed, (int)rightspeed);
                 }
+                motors.sendSpeeds();
             }
         }
+        this_thread::sleep_for(chrono::milliseconds(1));
     }
 }

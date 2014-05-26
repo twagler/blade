@@ -28,7 +28,7 @@ void WaypointNavigation() {
 
     bool first = true;
 
-    while(1)
+    while(Autonomous)
     {
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);

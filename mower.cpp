@@ -15,9 +15,12 @@ GPS gps;
 mutex drive_lock;
 condition_variable cv_drive;
 
+bool Autonomous = false;
 bool first = true;
 char adjustment;
 char targetspeed = 55;
+
+MotorDriver motors;
 
 void ReadGPS()
 {
@@ -47,9 +50,6 @@ void ReadGPS()
 void SetSpeeds()
 {
     cout << "Starting speed setting thread...\r\n";
-
-    MotorDriver motors;
-    motors.setMotorEnable(true);
 
     char leftspeed, rightspeed;
 
@@ -85,9 +85,11 @@ void SetSpeeds()
     }
 }
 
-
 void ControlCommands()
 {
+    //Set up TCP/IP server to accept commands across the network
+
+    /*  crap...
     fstream CommandStream;
     int command;
     CommandStream.open("commands.txt");
@@ -109,5 +111,23 @@ void ControlCommands()
             break;
 
         }
+    }*/
+}
+
+void ControlSwitcher()
+{
+    //initially we'll always depend on the joystick having control
+    //we'll change this later to accept commands via network
+    while(1)
+    {
+        thread PS3(JoystickTest);
+        while(!Autonomous)
+            this_thread::sleep_for(chrono::milliseconds(500));
+        PS3.join();
+        thread Navigate(WaypointNavigation);
+        while(Autonomous)
+            this_thread::sleep_for(chrono::milliseconds(500));
+        Navigate.join();
+
     }
 }
