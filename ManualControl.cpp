@@ -14,7 +14,6 @@ void JoystickTest()
         //exit(1);
     }
 
-
     motors.setMotorEnable(true);
 
     char leftspeed, rightspeed;
@@ -70,7 +69,7 @@ void JoystickTest()
                 //BUG WORKAROUND
                 if(leftspeed == -128)
                     leftspeed= 127;
-                else if (rightspeed == -128)
+                if (rightspeed == -128)
                     rightspeed = 127;
                 //BUG WORKAROUND
 
@@ -79,8 +78,8 @@ void JoystickTest()
                     motors.setSpeeds(leftspeed, rightspeed);
                     printf("Speeds: (%i,%i)\r\n",
                            (int)leftspeed, (int)rightspeed);
+                    motors.sendSpeeds();
                 }
-                motors.sendSpeeds();
             }
         }
         this_thread::sleep_for(chrono::milliseconds(1));

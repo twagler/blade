@@ -5,7 +5,7 @@ using namespace std;
 #define Kp        0.100
 #define Kd        0.005
 #define Ki        0.001
-#define ARRIVED   .00005
+#define ARRIVED   0.00005
 
 void WaypointNavigation() {
 
@@ -77,6 +77,7 @@ void WaypointNavigation() {
         }
         lk_gps.unlock();
     }
+    return;
 }
 
 

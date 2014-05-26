@@ -85,35 +85,6 @@ void SetSpeeds()
     }
 }
 
-void ControlCommands()
-{
-    //Set up TCP/IP server to accept commands across the network
-
-    /*  crap...
-    fstream CommandStream;
-    int command;
-    CommandStream.open("commands.txt");
-    while(1)
-    {
-        CommandStream >> command;
-
-        switch(command)
-        {
-        case AUTONOMOUS:
-            //enable thread WaypointNavigation
-            break;
-
-        case MANUAL:
-            //enable thread JoystickControl
-            break;
-
-        default:
-            break;
-
-        }
-    }*/
-}
-
 void ControlSwitcher()
 {
     //initially we'll always depend on the joystick having control
@@ -123,11 +94,17 @@ void ControlSwitcher()
         thread PS3(JoystickTest);
         while(!Autonomous)
             this_thread::sleep_for(chrono::milliseconds(500));
-        PS3.join();
+        if(PS3.joinable())
+            PS3.join();
+        else
+            exit(99);
         thread Navigate(WaypointNavigation);
         while(Autonomous)
             this_thread::sleep_for(chrono::milliseconds(500));
-        Navigate.join();
+        if(Navigate.joinable())
+            Navigate.join();
+        else
+            exit(98);
 
     }
 }

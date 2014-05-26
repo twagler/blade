@@ -7,7 +7,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <sstream>
 #include "controlserver.h"
+#include "mower.h"
 
 #define PORT "13333"   // port we're listening on
 
@@ -159,6 +161,33 @@ void ControlServer::run(void)
 
 void ControlServer::ParseCommand(char buf[])
 {
-    printf("%s",buf);
+    string command, value;
+    stringstream ss(stringstream::in | stringstream::out);
+    ss.str("");
+    ss.str(string(buf));
+    ss >> command >> value;
+
+    if(command=="mode")
+    {
+        if(value=="autonomous")
+        {
+            Autonomous=1;
+            printf("Changing to AUTO\r\n");
+        }
+        else
+        {
+            Autonomous=0;
+            printf("Changing to MANUAL\r\n");
+        }
+    }
+    else if(command=="halt")
+    {
+        //stop blades, motors, etc...
+        motors.setMotorEnable(false);
+    }
+
+    else
+        printf("Bad input.  What is: %s?", buf);
+
 }
 
