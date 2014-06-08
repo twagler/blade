@@ -12,7 +12,7 @@ MotorDriver::MotorDriver()
     myLeftSpeed = 0;
     myRightSpeed = 0;
     myEnable = 0;
-    comm_port.serial_initialize();
+    my_comm_port.serial_initialize("/dev/tty");
 }
 void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
 {
@@ -67,7 +67,7 @@ void MotorDriver::sendSpeeds()
     buffer[7] = Packet_Right.data;
     buffer[8] = Packet_Right.checksum;
 
-    comm_port.serial_write(buffer);
+    my_comm_port.serial_write(buffer);
 
     /*
     //DEBUG

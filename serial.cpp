@@ -9,15 +9,14 @@
 
 serial::serial()
 {
-    int my_serial_fd;
+
 }
 
-int serial::serial_initialize()
+int serial::serial_initialize(const char* port_name)
 {
     int fd = my_serial_fd;
 
-    //Jesus, make this a parameter...
-    const char *device = "/dev/tty";
+    const char *device = port_name;
 
     fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     if(fd == -1)

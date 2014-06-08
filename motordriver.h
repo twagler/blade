@@ -36,7 +36,7 @@ private:
     char myLeftSpeed;
     char myRightSpeed;
     bool myEnable;
-    serial comm_port;
+    serial my_comm_port;
 };
 
 #endif // MOTORDRIVER_H

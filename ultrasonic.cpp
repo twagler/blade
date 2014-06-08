@@ -3,6 +3,7 @@
 UltraSonic::UltraSonic()
 {
     int my_serial_fd;
+    my_comm_port.serial_initialize("/dev/tty");
 }
 
 void UltraSonic::trigger_sensors()
