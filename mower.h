@@ -11,6 +11,7 @@ using namespace std;
 #include "motordriver.h"
 #include "joystick.h"
 #include "controlserver.h"
+#include "ultrasonic.h"
 
 #define NUM_ULTRAS 5
 #define MIN_SPEED -126
@@ -29,6 +30,7 @@ void WriteGPS(void);
 void JoystickTest(void);
 void ControlSwitcher(void);
 void InitTCPServer(void);
+void InitUltraServer(void);
 void openSerial(void);
 
 extern int uSonic[];

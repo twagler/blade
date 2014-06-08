@@ -5,7 +5,7 @@ using namespace std;
 int main() {
 
     thread NetworkControl;
-    //thread RangeSensors(UpdateUltraData);
+    thread RangeSensors(InitUltraServer);
     thread ReceiveGPS(ReadGPS);
     thread AdjustSpeed(SetSpeeds);
     thread ControlSupervisor(ControlSwitcher);
