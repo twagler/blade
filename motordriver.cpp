@@ -12,6 +12,7 @@ MotorDriver::MotorDriver()
     myLeftSpeed = 0;
     myRightSpeed = 0;
     myEnable = 0;
+    comm_port.serial_initialize();
 }
 void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
 {
@@ -21,14 +22,7 @@ void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
 
 void MotorDriver::sendSpeeds()
 {
-    struct SabertoothPacket
-    {
-        unsigned char address;
-        unsigned char command;
-        unsigned char data;
-        unsigned char checksum;
-    };
-
+    char buffer[PACKET_LENGTH];
     SabertoothPacket Packet_Left;
     SabertoothPacket Packet_Right;
 
@@ -38,23 +32,23 @@ void MotorDriver::sendSpeeds()
     //send leftspeed
     if(myLeftSpeed >=0)  //drive forward
     {
-        Packet_Left.command = 0;
+        Packet_Left.command = LEFT_MOTOR_FORWARD;
         Packet_Left.data = myLeftSpeed;
     }
     else //drive backward
     {
-        Packet_Left.command = 1;
+        Packet_Left.command = LEFT_MOTOR_BACKWARD;
         Packet_Left.data = abs(myLeftSpeed);
 
     }
     if(myRightSpeed >=0) //drive forward
     {
-        Packet_Right.command = 4;
+        Packet_Right.command = RIGHT_MOTOR_FORWARD;
         Packet_Right.data = myRightSpeed;
     }
     else //drive backward
     {
-        Packet_Right.command = 5;
+        Packet_Right.command = RIGHT_MOTOR_BACKWARD;
         Packet_Right.data = abs(myRightSpeed);
     }
 
@@ -64,9 +58,22 @@ void MotorDriver::sendSpeeds()
     Packet_Right.checksum = (Packet_Right.address + Packet_Right.command
                              + Packet_Right.data) & 0b01111111;
 
+    buffer[1] = Packet_Left.address;
+    buffer[2] = Packet_Left.command;
+    buffer[3] = Packet_Left.data;
+    buffer[4] = Packet_Left.checksum;
+    buffer[5] = Packet_Right.address;
+    buffer[6] = Packet_Right.command;
+    buffer[7] = Packet_Right.data;
+    buffer[8] = Packet_Right.checksum;
+
+    comm_port.serial_write(buffer);
+
     /*
     //DEBUG
-    cout << "Left Packet... ";
+    comm_port.serial_write(comm_port.Packet_Left.address);
+    comm_port.serial_write()
+    << "Left Packet... ";
     cout << (int)Packet_Left.address << ",";
     cout << (int)Packet_Left.command << ",";
     cout << (int)Packet_Left.data << ",";
@@ -78,6 +85,18 @@ void MotorDriver::sendSpeeds()
     cout << (int)Packet_Right.checksum << endl;
     //DEBUG
     */
+}
+
+void MotorDriver::setBaudRate(int baud, char address)
+{
+    SabertoothPacket BaudPacket;
+
+    BaudPacket.address = address;
+    BaudPacket.command = CHANGE_BAUD_COMMAND;
+    BaudPacket.data = baud;
+    BaudPacket.checksum = (BaudPacket.address + BaudPacket.command
+                           + BaudPacket.data) & 0b01111111;
+
 }
 
 void MotorDriver::setMotorEnable(bool status)

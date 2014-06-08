@@ -1,6 +1,6 @@
-#include "mower.h"
+//#include "mower.h"
 
-void Print(GPS gps) {
+//void Print(GPS gps) {
    
    // pc.printf("Lat: %.6f Long: %.6f Sats: %d\r\n", gps.latitude(), gps.longitude(), gps.numOfSats());
    /*
@@ -19,4 +19,4 @@ void Print(GPS gps) {
     //printf("3,%d,%d,%d,%d,%d\r\n", uSonic[0], uSonic[1], uSonic[2], uSonic[3], uSonic[4]);
     //printf("4,%d,%d\r\n", leftspeed, rightspeed);
     
-}
+//}

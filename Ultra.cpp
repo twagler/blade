@@ -26,3 +26,10 @@ void UpdateUltraData()
         cout << "Refreshed Sensors...\r\n";
     }
 }
+
+void InitUltraSonicSerialPort()
+{
+    //declare serial port object
+    //pass it a port, baud, parity
+    //receive file descriptor and pass back to something
+}

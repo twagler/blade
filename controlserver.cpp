@@ -57,21 +57,25 @@ void ControlServer::run(void)
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-    if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
+    if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0)
+    {
         fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
         exit(1);
     }
 
-    for(p = ai; p != NULL; p = p->ai_next) {
+    for(p = ai; p != NULL; p = p->ai_next)
+    {
         listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-        if (listener < 0) {
+        if (listener < 0)
+        {
             continue;
         }
 
         // lose the pesky "address already in use" error message
         setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
-        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
+        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
+        {
             close(listener);
             continue;
         }
@@ -79,16 +83,17 @@ void ControlServer::run(void)
     }
 
     // if we got here, it means we didn't get bound
-    if (p == NULL) {
+    if (p == NULL)
+    {
         fprintf(stderr, "selectserver: failed to bind\n");
         exit(2);
     }
 
-
     freeaddrinfo(ai); // all done with this
 
     // listen
-    if (listen(listener, 10) == -1) {
+    if (listen(listener, 10) == -1)
+    {
         perror("listen");
         exit(3);
     }
@@ -184,6 +189,16 @@ void ControlServer::ParseCommand(char buf[])
     {
         //stop blades, motors, etc...
         motors.setMotorEnable(false);
+    }
+
+    else if (command=="Report_Location")
+    {
+
+    }
+
+    else if (command =="Report_Battery_Status")
+    {
+
     }
 
     else

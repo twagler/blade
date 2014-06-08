@@ -13,17 +13,18 @@ SOURCES += main.cpp \
     Ultra.cpp \
     WaypointNavigation.cpp \
     motordriver.cpp \
-    serial.cpp \
     joystick.cpp \
     ManualControl.cpp \
-    controlserver.cpp
+    controlserver.cpp \
+    serial.cpp
 
 HEADERS += \
     gps.h \
     motordriver.h \
     mower.h \
     joystick.h \
-    controlserver.h
+    controlserver.h \
+    serial.h
 
 OTHER_FILES += \
     README.md \

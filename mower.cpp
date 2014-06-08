@@ -32,7 +32,7 @@ void ReadGPS()
     ifstream GPSfile;
     GPSfile.open("input.txt");
 
-    while(1)
+    while(true)
     {
         GPSfile >> lat >> trash >> lon >> trash >> time;
 
@@ -76,10 +76,8 @@ void SetSpeeds()
         if (motors.getEnable())
         {
             motors.setSpeeds(leftspeed, rightspeed);
+            motors.sendSpeeds();
         }
-
-        motors.sendSpeeds();
-
         cout << "Motors: (" << (int)leftspeed << ","
              << (int)rightspeed << ")\r\n";
     }
@@ -87,9 +85,9 @@ void SetSpeeds()
 
 void ControlSwitcher()
 {
-    //initially we'll always depend on the joystick having control
+    //we'll depend on the joystick having control first
     //we'll change this later to accept commands via network
-    while(1)
+    while(true)
     {
         thread PS3(JoystickTest);
         while(!Autonomous)
@@ -105,6 +103,12 @@ void ControlSwitcher()
             Navigate.join();
         else
             exit(98);
-
     }
+}
+
+void InitTCPServer(void)
+{
+    ControlServer cs;
+    cs.run();
+    while(true);
 }

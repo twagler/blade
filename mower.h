@@ -23,11 +23,13 @@ void UpdateUltraData(void);
 void WaypointNavigation(void);
 void CalcWaypoint(void);
 void Print(GPS);
-void SetSpeeds();
-void ReadGPS();
-void WriteGPS();
-void JoystickTest();
-void ControlSwitcher();
+void SetSpeeds(void);
+void ReadGPS(void);
+void WriteGPS(void);
+void JoystickTest(void);
+void ControlSwitcher(void);
+void InitTCPServer(void);
+void openSerial(void);
 
 extern int uSonic[];
 

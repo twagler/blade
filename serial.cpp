@@ -1,17 +1,24 @@
-#include "mower.h"
 #include <termios.h>    /*Enables us to set baud rate for RX/TX seperately*/
 #include <fcntl.h>      /*Enables use of flags to modify open(), read(), write() functions*/
 #include <unistd.h>     /*Enables use of open(), read(), write()*/
+#include <string>
+#include <sstream>
+#include <iostream>
+#include "serial.h"
 
-void openSerial(void)
+
+serial::serial()
 {
-    int fd;
+    int my_serial_fd;
+}
 
-    const char *device = "/dev/ttyS0";
+int serial::serial_initialize()
+{
+    int fd = my_serial_fd;
+    const char *device = "/dev/tty";
     fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-    if(fd == -1) {
-      printf( "failed to open port\n" );
-    }
+    if(fd == -1)
+        printf( "failed to open port\n" );
 
     struct termios  config;
     if(!isatty(fd))
@@ -66,7 +73,7 @@ void openSerial(void)
     //
     if(cfsetispeed(&config, B9600) < 0 || cfsetospeed(&config, B9600) < 0)
     {
-       // ... error handling ...
+        // ... error handling ...
     }
     //
     // Finally, apply the configuration
@@ -76,5 +83,25 @@ void openSerial(void)
         // ... error handling ...
     }
 
+return fd;
+
+}
+
+int serial::serial_write(char* character)
+{
+    int bytes_written;
+    bytes_written = write(my_serial_fd, character, sizeof character);
+
+    return bytes_written;
+}
+
+char* serial::serial_read()
+{
+
+
+}
+
+int serial::serial_close(int fd)
+{
     close(fd);
 }
