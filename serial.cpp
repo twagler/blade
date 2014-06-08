@@ -15,7 +15,10 @@ serial::serial()
 int serial::serial_initialize()
 {
     int fd = my_serial_fd;
+
+    //Jesus, make this a parameter...
     const char *device = "/dev/tty";
+
     fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
     if(fd == -1)
         printf( "failed to open port\n" );

@@ -28,29 +28,12 @@ ControlServer::ControlServer()
 
 }
 
-void ControlServer::run(void)
+int ControlServer::initialize()
 {
-    fd_set master;    // master file descriptor list
-    fd_set read_fds;  // temp file descriptor list for select()
-    int fdmax;        // maximum file descriptor number
-
-    int listener;     // listening socket descriptor
-    int newfd;        // newly accept()ed socket descriptor
-    struct sockaddr_storage remoteaddr; // client address
-    socklen_t addrlen;
-
-    char buf[256];    // buffer for client data
-    int nbytes;
-
-    char remoteIP[INET6_ADDRSTRLEN];
-
     int yes=1;        // for setsockopt() SO_REUSEADDR, below
-    int i, rv;
-
+    int rv;
+    int listener;     // listening socket descriptor
     struct addrinfo hints, *ai, *p;
-
-    FD_ZERO(&master);    // clear the master and temp sets
-    FD_ZERO(&read_fds);
 
     // get us a socket and bind it
     memset(&hints, 0, sizeof hints);
@@ -97,6 +80,30 @@ void ControlServer::run(void)
         perror("listen");
         exit(3);
     }
+    return listener;
+}
+
+void ControlServer::run(void)
+{
+    int i;
+    fd_set master;    // master file descriptor list
+    fd_set read_fds;  // temp file descriptor list for select()
+    int fdmax;        // maximum file descriptor number
+
+    int listener;     // listening socket descriptor
+    int newfd;        // newly accept()ed socket descriptor
+    struct sockaddr_storage remoteaddr; // client address
+    socklen_t addrlen;
+
+    char buf[256];    // buffer for client data
+    int nbytes;
+
+    char remoteIP[INET6_ADDRSTRLEN];
+
+    FD_ZERO(&master);    // clear the master and temp sets
+    FD_ZERO(&read_fds);
+
+    listener = initialize();
 
     // add the listener to the master set
     FD_SET(listener, &master);

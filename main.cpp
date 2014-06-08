@@ -16,7 +16,7 @@ int main() {
        this_thread::sleep_for(chrono::milliseconds(500));
 
     //if(ReceiveGPS.joinable())
-    //    ReceiveGPS.join();;
+    //    ReceiveGPS.join();
     //if(AdjustSpeed.joinable())
     //    AdjustSpeed.join();
     //if(ControlSupervisor.joinable())

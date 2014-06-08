@@ -9,6 +9,9 @@ public:
     ControlServer();
     void run();
     void ParseCommand(char[]);
+
+private:
+    int initialize();
 };
 
 #endif
