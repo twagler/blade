@@ -18,7 +18,7 @@ void JoystickTest()
 
     char leftspeed, rightspeed;
     JoystickEvent event;
-    while (!Autonomous)
+    while (true)
     {
         if (joystick.sample(&event))
         {
@@ -28,7 +28,7 @@ void JoystickTest()
                 {
                 case PS:
                     if(event.value==0)
-                        Autonomous = 1;
+                        Autonomous = !Autonomous;
                     printf("PS is: ");
                     break;
                 case TRIANGLE:
@@ -52,7 +52,7 @@ void JoystickTest()
             }
             //tie left wheel to axis 1 and right wheel to axis 3
             else if (event.isAxis() && !event.isInitialState() &&
-                     (event.number == 1 || event.number ==3))
+                     (event.number == 1 || event.number ==3) && !Autonomous)
             {
                 switch(event.number)
                 {

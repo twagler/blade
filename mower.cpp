@@ -81,45 +81,4 @@ void SetSpeeds()
     }
 }
 
-void ControlSwitcher()
-{
-    //we'll depend on the joystick having control first
-    //we'll change this later to accept commands via network
-    while(true)
-    {
-        thread PS3(JoystickTest);
-        while(!Autonomous)
-            this_thread::sleep_for(chrono::milliseconds(500));
-        if(PS3.joinable())
-            PS3.join();
-        else
-            exit(99);
-        thread Navigate(WaypointNavigation);
-        while(Autonomous)
-            this_thread::sleep_for(chrono::milliseconds(500));
-        if(Navigate.joinable())
-            Navigate.join();
-        else
-            exit(98);
-    }
-}
 
-void InitTCPServer(void)
-{
-    printf("Starting Network Control Server...\r\n");
-    ControlServer cs;
-    cs.run();
-    while(true);
-}
-
-void InitUltraServer(void)
-{
-    printf("Starting Ultrasonic Update Daemon...\r\n");
-    UltraSonic us;
-    while(true)
-    {
-        us.updateUltra();
-        printf("Refreshed Sensors...\r\n");
-        this_thread::sleep_for(chrono::seconds(1));
-    }
-}

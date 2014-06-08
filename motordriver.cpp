@@ -67,24 +67,9 @@ void MotorDriver::sendSpeeds()
     buffer[7] = Packet_Right.data;
     buffer[8] = Packet_Right.checksum;
 
-    my_comm_port.serial_write(buffer);
+    if(my_comm_port.serial_write(buffer) != 8)
+        printf("motor driver serial write error\r\n");
 
-    /*
-    //DEBUG
-    comm_port.serial_write(comm_port.Packet_Left.address);
-    comm_port.serial_write()
-    << "Left Packet... ";
-    cout << (int)Packet_Left.address << ",";
-    cout << (int)Packet_Left.command << ",";
-    cout << (int)Packet_Left.data << ",";
-    cout << (int)Packet_Left.checksum << endl;
-    cout << "Right Packet... ";
-    cout << (int)Packet_Right.address << ",";
-    cout << (int)Packet_Right.command << ",";
-    cout << (int)Packet_Right.data << ",";
-    cout << (int)Packet_Right.checksum << endl;
-    //DEBUG
-    */
 }
 
 void MotorDriver::setBaudRate(int baud, char address)
