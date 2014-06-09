@@ -12,6 +12,7 @@ public:
 
 private:
     int initialize();
+
 };
 
 #endif

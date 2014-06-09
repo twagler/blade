@@ -29,6 +29,7 @@ void JoystickTest()
                 case PS:
                     if(event.value==0)
                         Autonomous = !Autonomous;
+
                     printf("PS is: ");
                     break;
                 case TRIANGLE:

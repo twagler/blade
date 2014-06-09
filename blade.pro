@@ -15,8 +15,11 @@ SOURCES += main.cpp \
     joystick.cpp \
     ManualControl.cpp \
     controlserver.cpp \
-    serial.cpp \
-    ultrasonic.cpp
+    ultrasonic.cpp \
+    libSerial/PosixSignalDispatcher.cpp \
+    libSerial/SerialPort.cpp \
+    libSerial/SerialStream.cc \
+    libSerial/SerialStreamBuf.cc
 
 HEADERS += \
     gps.h \
@@ -24,10 +27,15 @@ HEADERS += \
     mower.h \
     joystick.h \
     controlserver.h \
-    serial.h \
-    ultrasonic.h
+    ultrasonic.h \
+    libSerial/PosixSignalDispatcher.h \
+    libSerial/PosixSignalHandler.h \
+    libSerial/SerialPort.h \
+    libSerial/SerialStream.h \
+    libSerial/SerialStreamBuf.h
 
 OTHER_FILES += \
     README.md \
     input.txt
 
+QMAKE_CXXFLAGS+=-Wno-ignored-qualifiers

@@ -10,7 +10,7 @@
 #define RIGHT_MOTOR_BACKWARD    5
 #define CHANGE_BAUD_COMMAND     15
 
-#include "serial.h"
+#include "libSerial/SerialStream.h"
 
 class MotorDriver
 {
@@ -36,7 +36,7 @@ private:
     char myLeftSpeed;
     char myRightSpeed;
     bool myEnable;
-    serial my_comm_port;
+    LibSerial::SerialStream my_comm_port;
 };
 
 #endif // MOTORDRIVER_H

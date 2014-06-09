@@ -13,6 +13,7 @@ using namespace std;
 #include "joystick.h"
 #include "controlserver.h"
 #include "ultrasonic.h"
+#include "libSerial/SerialStream.h"
 
 #define NUM_ULTRAS 5
 #define MIN_SPEED -126

@@ -9,6 +9,7 @@ void my_handler (int signum)
 
 int main() {
 
+
     signal(SIGINT, my_handler);  //doesn't work
     thread NetworkControl;
     thread RangeSensors(InitUltraServer);
@@ -21,6 +22,8 @@ int main() {
 
     while(1)  //bad bad bad bad bad
         this_thread::sleep_for(chrono::milliseconds(500));
+
+
 
     //if(ReceiveGPS.joinable())
     //    ReceiveGPS.join();

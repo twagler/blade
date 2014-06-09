@@ -51,8 +51,8 @@ void SetSpeeds()
 
     char leftspeed, rightspeed;
 
-    while(true){
-
+    while(true)
+    {
         unique_lock<mutex> lk_drive(drive_lock);
         cv_drive.wait(lk_drive);
 
@@ -70,6 +70,12 @@ void SetSpeeds()
             rightspeed = MIN_SPEED;
         else if (rightspeed>MAX_SPEED)
             rightspeed = MAX_SPEED;
+
+        if(!Autonomous)
+        {
+            leftspeed = 0;
+            rightspeed = 0;
+        }
 
         if (motors.getEnable())
         {
