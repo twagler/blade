@@ -14,8 +14,6 @@ public:
     void setLongitude(float);
     void setTime(int);
 
-    float distance(GPS, GPS);
-
 private:
     float myLatitude;
     float myLongitude;

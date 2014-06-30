@@ -9,16 +9,23 @@ void my_handler (int signum)
 
 int main() {
 
+    GPIO gpio23(23);
 
-    signal(SIGINT, my_handler);  //doesn't work
-    thread NetworkControl;
-    thread RangeSensors(InitUltraServer);
-    thread ReceiveGPS(ReadGPS);
-    thread AdjustSpeed(SetSpeeds);
-    thread ControlSupervisor(ControlSwitcher);
-    thread PS3(JoystickTest);
+    //bool value;
 
-    NetworkControl = thread(InitTCPServer);
+    //value = gpio23.get_value();
+
+
+
+    //signal(SIGINT, my_handler);  //doesn't work
+    //thread NetworkControl;
+    //thread RangeSensors(InitUltraServer);
+    //thread ReceiveGPS(ReadGPS);
+    //thread AdjustSpeed(SetSpeeds);
+    //thread ControlSupervisor(ControlSwitcher);
+    //thread PS3(JoystickTest);
+
+    //NetworkControl = thread(InitTCPServer);
 
     while(1)  //bad bad bad bad bad
         this_thread::sleep_for(chrono::milliseconds(500));
@@ -33,7 +40,9 @@ int main() {
     //    ControlSupervisor.join();
 
 
-    return(0);
+    //delete gpio23;
+
+    //return(0);
 
 }
 

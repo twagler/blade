@@ -6,6 +6,8 @@ using namespace std;
 float LATwaypoint[] = {37.971417,   37.971495,  37.971497,  37.971432,  37.971417,  37.971495,  37.971497,  37.971432};
 float LONwaypoint[] = {-87.529813, -87.529810, -87.529698, -87.529695, -87.529813, -87.529810, -87.529698, -87.529695};
 
+vector<GPS> waypoints;
+
 mutex gps_lock;
 condition_variable cv_gps;
 GPS gps;
@@ -85,6 +87,20 @@ void SetSpeeds()
         cout << "Motors: (" << (int)leftspeed << ","
              << (int)rightspeed << ")\r\n";
     }
+}
+
+float gps_distance(GPS one, GPS two)
+{
+    double dlong = (two.getLongitude() - one.getLongitude())*d2r;
+    double dlat = (two.getLatitude() - one.getLatitude())*d2r;
+    double a1 = sin(dlat/2.0);
+    double a2 = sin(dlong/2.0);
+    double a = (a1*a1) + cos(one.getLatitude()*d2r) *
+            cos(two.getLatitude()*d2r) * (a2*a2);
+    double c = 2 * atan2(sqrt(a), sqrt(1-a));
+    double d = 2.54 * 12 * 5280 * 3956 * c; //cm, in, ft, scaler
+
+    return d;
 }
 
 

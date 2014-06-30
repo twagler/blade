@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     libSerial/PosixSignalDispatcher.cpp \
     libSerial/SerialPort.cpp \
     libSerial/SerialStream.cc \
-    libSerial/SerialStreamBuf.cc
+    libSerial/SerialStreamBuf.cc \
+    libGPIO/libgpio.cpp
 
 HEADERS += \
     gps.h \
@@ -32,7 +33,9 @@ HEADERS += \
     libSerial/PosixSignalHandler.h \
     libSerial/SerialPort.h \
     libSerial/SerialStream.h \
-    libSerial/SerialStreamBuf.h
+    libSerial/SerialStreamBuf.h \
+    libgpio.h \
+    libGPIO/libgpio.h
 
 OTHER_FILES += \
     README.md \

@@ -51,10 +51,18 @@ void WaypointNavigation() {
         {
             CalcWaypoint();
             wayindex++;
-            DeltaXgoal = LATwaypoint[wayindex+1] - LATwaypoint[wayindex];
-            DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
 
-            PathLength = sqrt((DeltaXgoal*DeltaXgoal) + (DeltaYgoal*DeltaYgoal));
+            GPS way;
+            GPS way2;
+
+            way.setLatitude(LATwaypoint[wayindex]);
+            way.setLongitude(LONwaypoint[wayindex]);
+            way2.setLatitude(LATwaypoint[wayindex+1]);
+            way2.setLongitude(LONwaypoint[wayindex+1]);
+
+            PathLength = gps_distance(way,way2);
+
+            printf("path length: %fcm\r\n",PathLength);
             first = false;
         }
 

@@ -14,6 +14,9 @@ using namespace std;
 #include "controlserver.h"
 #include "ultrasonic.h"
 #include "libSerial/SerialStream.h"
+#include "libGPIO/libgpio.h"
+
+#define d2r (M_PI / 180.0)
 
 #define NUM_ULTRAS 5
 #define MIN_SPEED -126
@@ -34,6 +37,7 @@ void ControlSwitcher(void);
 void InitTCPServer(void);
 void InitUltraServer(void);
 void openSerial(void);
+float gps_distance(GPS,GPS);
 
 extern int uSonic[];
 
