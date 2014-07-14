@@ -13,8 +13,8 @@ using namespace std;
 #include "joystick.h"
 #include "controlserver.h"
 #include "ultrasonic.h"
-#include "libSerial/SerialStream.h"
 #include "libGPIO/libgpio.h"
+#include "NMEAParser/NMEAParser.h"
 
 #define d2r (M_PI / 180.0)
 
@@ -30,12 +30,14 @@ void WaypointNavigation(void);
 void CalcWaypoint(void);
 void Print(GPS);
 void SetSpeeds(void);
-void ReadGPS(void);
+void ReadGPS_RTKLIB(void);
+void ReadGPS_NMEA(void);
 void WriteGPS(void);
 void JoystickTest(void);
 void ControlSwitcher(void);
 void InitTCPServer(void);
 void InitUltraServer(void);
+void InitGPSThread(void);
 void openSerial(void);
 float gps_distance(GPS,GPS);
 
@@ -57,5 +59,7 @@ extern char adjustment;
 extern char targetspeed;
 
 extern bool Autonomous;
+
+extern NMEAParser parser;
 
 

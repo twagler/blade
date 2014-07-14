@@ -6,7 +6,7 @@ using namespace std;
 float LATwaypoint[] = {37.971417,   37.971495,  37.971497,  37.971432,  37.971417,  37.971495,  37.971497,  37.971432};
 float LONwaypoint[] = {-87.529813, -87.529810, -87.529698, -87.529695, -87.529813, -87.529810, -87.529698, -87.529695};
 
-vector<GPS> waypoints;
+//vector<GPS> waypoints;
 
 mutex gps_lock;
 condition_variable cv_gps;
@@ -22,9 +22,11 @@ char targetspeed = 55;
 
 MotorDriver motors;
 
-void ReadGPS()
+NMEAParser parser;
+
+void ReadGPS_RTKLIB()
 {
-    cout << "Starting GPS Reception thread...\r\n";
+    cout << "Starting RTKLIB GPS Reception thread...\r\n";
     float lat, lon;
     int time;
     char trash;
@@ -39,12 +41,32 @@ void ReadGPS()
         gps_lock.lock();
         gps.setLatitude(lat);
         gps.setLongitude(lon);
-        gps.setTime(time);
+        //gps.setTime(time);
         gps_lock.unlock();
         cv_gps.notify_one();
         this_thread::sleep_for(chrono::milliseconds(500));
     }
     GPSfile.close();
+}
+
+void ReadGPS_NMEA()
+{
+    cout << "Starting NMEA GPS Reception thread...\r\n";
+
+    GPSInfo reading;
+
+    while(true)
+    {
+        reading = parser.GetActualGPSInfo();
+
+        gps_lock.lock();
+        gps.setLatitude(reading.m_latitude);
+        gps.setLongitude(reading.m_longitude);
+        //gps.setTime(reading.m_time);
+        gps_lock.unlock();
+        cv_gps.notify_one();
+        this_thread::sleep_for(chrono::milliseconds(500));
+    }
 }
 
 void SetSpeeds()

@@ -16,11 +16,9 @@ SOURCES += main.cpp \
     ManualControl.cpp \
     controlserver.cpp \
     ultrasonic.cpp \
-    libSerial/PosixSignalDispatcher.cpp \
-    libSerial/SerialPort.cpp \
-    libSerial/SerialStream.cc \
-    libSerial/SerialStreamBuf.cc \
-    libGPIO/libgpio.cpp
+    libGPIO/libgpio.cpp \
+    NMEAParser/NMEAParser.cpp \
+    NMEAParser/GPSInfo.cpp
 
 HEADERS += \
     gps.h \
@@ -29,13 +27,10 @@ HEADERS += \
     joystick.h \
     controlserver.h \
     ultrasonic.h \
-    libSerial/PosixSignalDispatcher.h \
-    libSerial/PosixSignalHandler.h \
-    libSerial/SerialPort.h \
-    libSerial/SerialStream.h \
-    libSerial/SerialStreamBuf.h \
     libgpio.h \
-    libGPIO/libgpio.h
+    libGPIO/libgpio.h \
+    NMEAParser/GPSInfo.h \
+    NMEAParser/NMEAParser.h
 
 OTHER_FILES += \
     README.md \

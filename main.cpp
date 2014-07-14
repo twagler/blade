@@ -9,7 +9,11 @@ void my_handler (int signum)
 
 int main() {
 
-    GPIO gpio23(23);
+    GPSInfo reading;
+
+    thread readgps(InitGPSThread);
+
+    //GPIO gpio23(23);
 
     //bool value;
 
@@ -18,19 +22,17 @@ int main() {
 
 
     //signal(SIGINT, my_handler);  //doesn't work
-    //thread NetworkControl;
+    thread NetworkControl;
     //thread RangeSensors(InitUltraServer);
-    //thread ReceiveGPS(ReadGPS);
-    //thread AdjustSpeed(SetSpeeds);
-    //thread ControlSupervisor(ControlSwitcher);
-    //thread PS3(JoystickTest);
+    thread ReceiveGPS(ReadGPS_NMEA);
+    thread AdjustSpeed(SetSpeeds);
+    thread ControlSupervisor(ControlSwitcher);
+    thread PS3(JoystickTest);
 
     //NetworkControl = thread(InitTCPServer);
 
     while(1)  //bad bad bad bad bad
         this_thread::sleep_for(chrono::milliseconds(500));
-
-
 
     //if(ReceiveGPS.joinable())
     //    ReceiveGPS.join();
@@ -52,6 +54,11 @@ void InitTCPServer(void)
     ControlServer cs;
     cs.run();
     while(true);
+}
+void InitGPSThread(void)
+{
+    printf("Starting GPS Parsing Thread...\r\n");
+    parser.read_serial();  //while(true) inside
 }
 
 void InitUltraServer(void)

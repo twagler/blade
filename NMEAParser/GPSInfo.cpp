@@ -1,0 +1,22 @@
+// GPSInfo.cpp: implementation of the GPSInfo class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "GPSInfo.h"
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+GPSInfo::GPSInfo():
+    m_latitude(0),
+    m_longitude(0),
+    m_altitude(0),
+    m_nSentences(0),
+    m_signalQuality(0),
+    m_satelitesInUse(0),
+    m_time()
+  {}
+
+GPSInfo::~GPSInfo()
+{}
