@@ -2,48 +2,18 @@ using namespace std;
 
 #include "mower.h"
 
-void my_handler (int signum)
-{
-    printf("Caught signal %d\r\n", signum);
-}
-
 int main() {
 
     thread readgps(InitGPSThread);
-
-    //GPIO gpio23(23);
-
-    //bool value;
-
-    //value = gpio23.get_value();
-
-
-
-    //signal(SIGINT, my_handler);  //doesn't work
-    thread NetworkControl;
     //thread RangeSensors(InitUltraServer);
     thread ReceiveGPS(ReadGPS_NMEA);
     thread AdjustSpeed(SetSpeeds);
     thread ControlSupervisor(ControlSwitcher);
     thread PS3(JoystickTest);
-
-    //NetworkControl = thread(InitTCPServer);
+    thread NetworkControl(InitTCPServer);
 
     while(1)  //bad bad bad bad bad
         this_thread::sleep_for(chrono::milliseconds(500));
-
-    //if(ReceiveGPS.joinable())
-    //    ReceiveGPS.join();
-    //if(AdjustSpeed.joinable())
-    //    AdjustSpeed.join();
-    //if(ControlSupervisor.joinable())
-    //    ControlSupervisor.join();
-
-
-    //delete gpio23;
-
-    //return(0);
-
 }
 
 void InitTCPServer(void)
@@ -91,6 +61,7 @@ void ControlSwitcher()
         if(Navigate.joinable())
             Navigate.join();
 
+        //give the CPU a break...
         this_thread::sleep_for(chrono::milliseconds(500));
     }
 }

@@ -130,9 +130,7 @@ void ControlServer::run(void)
                 {
                     // handle new connections
                     addrlen = sizeof remoteaddr;
-                    newfd = accept(listener,
-                                   (struct sockaddr *)&remoteaddr,
-                                   &addrlen);
+                    newfd = accept(listener,(struct sockaddr *)&remoteaddr,&addrlen);
 
                     if (newfd == -1)
                         perror("accept");
@@ -142,8 +140,7 @@ void ControlServer::run(void)
                         if (newfd > fdmax)    // keep track of the max
                             fdmax = newfd;
 
-                        printf("selectserver: new connection from %s on "
-                               "socket %d\n",
+                        printf("selectserver: new connection from %s on socket %d\n",
                                inet_ntop(remoteaddr.ss_family,
                                          get_in_addr((struct sockaddr*)&remoteaddr),
                                          remoteIP, INET6_ADDRSTRLEN), newfd);
