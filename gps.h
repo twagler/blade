@@ -1,23 +1,41 @@
 #ifndef GPS_H
 #define GPS_H
 
+#include <time.h>
+
 class GPS
 {
 public:
     GPS();
-    GPS(float, float, int);
-    float getLatitude() const;
-    float getLongitude() const;
-    int getTime() const;
+    GPS(double, double);
 
-    void setLatitude(float);
-    void setLongitude(float);
-    void setTime(int);
+    double getLatitude(void) const;
+    double getLongitude(void) const;
+    double getAltitude(void) const;
+    unsigned long getSentenceCount(void) const;
+    unsigned int getSignalQuality(void) const;
+    unsigned int getSatelitesInUse(void) const;
+    tm getTime(void) const;
+
+    void setLatitude(double);
+    void setLongitude(double);
+    void setAltitude(double);
+    void setSentenceCount(unsigned long);
+    void setSignalQuality(unsigned int);
+    void setSatelitesInUse(unsigned int);
+    void incrementSentenceCount(void);
+
+    void setTime(tm);
 
 private:
-    float myLatitude;
-    float myLongitude;
-    int myTime;
+
+    double myLatitude;
+    double myLongitude;
+    double myAltitude;
+    unsigned long mySentenceCount;
+    unsigned int mySignalQuality;
+    unsigned int mySatelitesInUse;
+    tm myTime;
 };
 
 #endif // GPS_H

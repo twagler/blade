@@ -17,8 +17,7 @@ SOURCES += main.cpp \
     controlserver.cpp \
     ultrasonic.cpp \
     libGPIO/libgpio.cpp \
-    NMEAParser/NMEAParser.cpp \
-    NMEAParser/GPSInfo.cpp
+    NMEAParser/NMEAParser.cpp
 
 HEADERS += \
     gps.h \
@@ -29,7 +28,6 @@ HEADERS += \
     ultrasonic.h \
     libgpio.h \
     libGPIO/libgpio.h \
-    NMEAParser/GPSInfo.h \
     NMEAParser/NMEAParser.h
 
 OTHER_FILES += \

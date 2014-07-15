@@ -9,8 +9,6 @@ void my_handler (int signum)
 
 int main() {
 
-    GPSInfo reading;
-
     thread readgps(InitGPSThread);
 
     //GPIO gpio23(23);
@@ -75,15 +73,21 @@ void InitUltraServer(void)
 
 void ControlSwitcher()
 {
+    //Initialize the thread object
     thread Navigate;
+
+    //infinite loop here
     while(true)
     {
+        //if we're operating in Autonomous mode, kick off the WaypointNavigation thread
         if(Autonomous)
             Navigate = thread(WaypointNavigation);
 
+        //Continue to operate in autonomous mode until something kicks us out of auto
         while(Autonomous)
             this_thread::sleep_for(chrono::milliseconds(500));
 
+        //join the thread when booted out of auto
         if(Navigate.joinable())
             Navigate.join();
 

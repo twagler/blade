@@ -4,14 +4,14 @@
 
 #define GPS_SERIAL_PORT
 
-#include "GPSInfo.h"
+#include "gps.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <termios.h>
-#include <ctype.h>
-#include <string.h> // needed for memsetc++
+#include <termios.h>    // needed for serial port
+#include <ctype.h>      // needed for isalpha(), etc...
+#include <string.h>     // needed for memsetc++
 
 #define SERIAL_DEVICE "/dev/ttyUSB0"
 
@@ -21,7 +21,7 @@ public:
 	NMEAParser();
 	virtual ~NMEAParser();
     void Parse(const char *buf, const unsigned int bufSize);
-	GPSInfo& GetActualGPSInfo();
+    GPS& GetActualGPSInfo();
     void read_serial();
 
 private:
@@ -35,6 +35,6 @@ private:
     void ProcessGPRMC(const char *buf, const unsigned int bufSize);
     void ProcessGPZDA(const char *buf, const unsigned int bufSize);
 
-	GPSInfo m_GPSInfo;
+    GPS myGPSInfo;
 
 };

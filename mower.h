@@ -43,8 +43,8 @@ float gps_distance(GPS,GPS);
 
 extern int uSonic[];
 
-extern float LATwaypoint[];
-extern float LONwaypoint[];
+extern double LATwaypoint[];
+extern double LONwaypoint[];
 
 extern mutex gps_lock;
 extern condition_variable cv_gps;

@@ -260,9 +260,9 @@ void NMEAParser::ParseNMEASentence(const char *addressField,
     }
 }
 
-GPSInfo& NMEAParser::GetActualGPSInfo()
+GPS& NMEAParser::GetActualGPSInfo()
 {
-    return m_GPSInfo;
+    return myGPSInfo;
 }
 
 /*
@@ -468,13 +468,15 @@ void NMEAParser::ProcessGPGGA(const char *buf, const unsigned int bufSize)
         return;
 
     // Set the values of m_GPSInfo
-    m_GPSInfo.m_latitude = latitude;
-    m_GPSInfo.m_longitude = longitude;
-    m_GPSInfo.m_altitude = altitude;
-    m_GPSInfo.m_nSentences++;
-    m_GPSInfo.m_signalQuality = quality;
-    m_GPSInfo.m_satelitesInUse = satelitesInUse;
+    myGPSInfo.setLatitude(latitude);
+    myGPSInfo.setLongitude(longitude);
+    myGPSInfo.setAltitude(altitude);
+    myGPSInfo.setSignalQuality(quality);
+    myGPSInfo.setSatelitesInUse(satelitesInUse);
+    myGPSInfo.incrementSentenceCount();
+
     //m_GPSInfo.m_time
+
 }
 
 void NMEAParser::ProcessGPGSA(const char *buf, const unsigned int bufSize)
@@ -671,9 +673,9 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
         return;
 
     // Set the values of m_GPSInfo
-    m_GPSInfo.m_latitude = latitude;
-    m_GPSInfo.m_longitude = longitude;
-    m_GPSInfo.m_nSentences++;
+    myGPSInfo.setLatitude(latitude);
+    myGPSInfo.setLongitude(longitude);
+    myGPSInfo.incrementSentenceCount();
 }
 
 void NMEAParser::ProcessGPZDA(const char *buf, const unsigned int bufSize)

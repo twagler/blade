@@ -4,37 +4,73 @@ GPS::GPS()
 {
     myLatitude = 0;
     myLongitude = 0;
-    myTime = 0;
+    //myTime = 0;
 }
 
-GPS::GPS(float lat,float lon,int tim)
+GPS::GPS(double lat,double lon)
 {
     myLatitude = lat;
     myLongitude = lon;
-    myTime = tim;
+    //myTime = tim;
 }
 
-float GPS::getLatitude() const
+double GPS::getLatitude() const
 {
     return myLatitude;
 }
-float GPS::getLongitude() const
+double GPS::getLongitude() const
 {
     return myLongitude;
 }
-int GPS::getTime() const
+double GPS::getAltitude() const
+{
+    return myAltitude;
+}
+unsigned long GPS::getSentenceCount() const
+{
+    return mySentenceCount;
+}
+unsigned int GPS::getSignalQuality() const
+{
+    return mySignalQuality;
+}
+unsigned int GPS::getSatelitesInUse() const
+{
+    return mySatelitesInUse;
+}
+tm GPS::getTime() const
 {
     return myTime;
 }
-void GPS::setLatitude(float lat)
+void GPS::setLatitude(double lat)
 {
     myLatitude = lat;
 }
-void GPS::setLongitude(float lon)
+void GPS::setLongitude(double lon)
 {
     myLongitude = lon;
 }
-void GPS::setTime(int time)
+void GPS::setAltitude(double alt)
+{
+    myAltitude = alt;
+}
+void GPS::setSentenceCount(unsigned long sent_count)
+{
+    mySentenceCount = sent_count;
+}
+void GPS::incrementSentenceCount()
+{
+    mySentenceCount++;
+}
+void GPS::setSignalQuality(unsigned int sig_qual)
+{
+    mySignalQuality = sig_qual;
+}
+void GPS::setSatelitesInUse(unsigned int sats)
+{
+    mySatelitesInUse = sats;
+}
+void GPS::setTime(tm time)
 {
     myTime = time;
 }
