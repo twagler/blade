@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     controlserver.cpp \
     ultrasonic.cpp \
     libGPIO/libgpio.cpp \
-    NMEAParser/NMEAParser.cpp
+    NMEAParser/NMEAParser.cpp \
+    serialport.cpp
 
 HEADERS += \
     gps.h \
@@ -28,10 +29,9 @@ HEADERS += \
     ultrasonic.h \
     libgpio.h \
     libGPIO/libgpio.h \
-    NMEAParser/NMEAParser.h
+    NMEAParser/NMEAParser.h \
+    serialport.h
 
 OTHER_FILES += \
     README.md \
     input.txt
-
-QMAKE_CXXFLAGS+=-Wno-ignored-qualifiers

@@ -5,6 +5,7 @@
 #define GPS_SERIAL_PORT
 
 #include "gps.h"
+#include "serialport.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -36,5 +37,6 @@ private:
     void ProcessGPZDA(const char *buf, const unsigned int bufSize);
 
     GPS myGPSInfo;
+    //SerialPort mySerialPort;
 
 };

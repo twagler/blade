@@ -2,6 +2,10 @@ using namespace std;
 
 #include "mower.h"
 
+/* This thread opens the /dev/js* device and continuously
+ * polls for events.  If an event is found the thread
+ * handles that button as defined...
+ */
 void JoystickTest()
 {
     printf("Starting Joystick thread...\r\n");
@@ -10,50 +14,54 @@ void JoystickTest()
     // Ensure that it was found and that we can use it
     if (!joystick.isFound())
     {
-        printf("open failed.\n");
-        //exit(1);
+        printf("Joystick open failed...\r\n"); //print error
+        exit(1);    //exit program if joystick is not found
+                    //this is probably a bad idea
     }
 
-    motors.setMotorEnable(true);
+    motors.setMotorEnable(true);    //enable the motors
+                                    //shouldn't do this here
 
-    char leftspeed, rightspeed;
-    JoystickEvent event;
-    while (true)
+    char leftspeed, rightspeed;     //speed values for motors L&R
+    JoystickEvent event;            //linux event object
+    while (true)    //loop loop loop...
     {
-        if (joystick.sample(&event))
+        if (joystick.sample(&event))  //if we got a bite
         {
+            //if that bite is a button and not the first one
             if (event.isButton() && !event.isInitialState())
             {
-                switch(event.number)
+                switch(event.number)  //which one
                 {
-                case PS:
-                    if(event.value==0)
-                        Autonomous = !Autonomous;
+                case PS:    //playstation button
+                    if(event.value==0)  //only trigger on the down-press
+                        Autonomous = !Autonomous; //toggle auto
 
-                    printf("PS is: ");
+                    printf("PS is: "); //print button label
                     break;
-                case TRIANGLE:
-                    printf("Triangle is: ");
+                case TRIANGLE:  //triangle button
+                    printf("Triangle is: "); //print button label
                     break;
-                case CIRCLE:
-                    printf("Circle is: ");
+                case CIRCLE:  //circle button
+                    printf("Circle is: ");  //print button label
                     break;
-                case SQUARE:
-                    printf("Square is: ");
+                case SQUARE: //square button
+                    printf("Square is: ");  //print button label
                     break;
-                case X:
-                    printf("X is: ");
+                case X:  //x... EX... ecks...?  button
+                    printf("X is: ");  //print button label
                     break;
                 default:
-
-                    printf("Button %u is: ", event.number);
+                    printf("Button %u is: ", event.number); //everything else
                     break;
                 }
+                //print button status
                 printf("%s\r\n", event.value == 0 ? "up" : "down");
             }
             //tie left wheel to axis 1 and right wheel to axis 3
             else if (event.isAxis() && !event.isInitialState() &&
-                     (event.number == 1 || event.number ==3) && !Autonomous)
+                     (event.number == LEFT_STICK || event.number == RIGHT_STICK)
+                     && !Autonomous)
             {
                 switch(event.number)
                 {
@@ -67,6 +75,14 @@ void JoystickTest()
                     break;
                 }
 
+                /*  Apparently this driver works normally except
+                 * when you push the stick all the way forward.
+                 * In this case the value climbs from 0,1,2,3,4...
+                 * all the way up to 127.  Push just a little further
+                 * and you get -128... Silly, right?
+                 * Hence, bug workaround...
+                 */
+
                 //BUG WORKAROUND
                 if(leftspeed == -128)
                     leftspeed= 127;
@@ -74,15 +90,22 @@ void JoystickTest()
                     rightspeed = 127;
                 //BUG WORKAROUND
 
-                if (motors.getEnable())
+
+                //if the motors are turned on, go ahead and set the
+                //speeds dictated by the sticks.
+                //by the way, print out the values for giggles...
+                if (motors.getEnable())  //are the motors on?
                 {
-                    motors.setSpeeds(leftspeed, rightspeed);
+                    motors.setSpeeds(leftspeed, rightspeed);  //set the values
+                    //print them
                     printf("Speeds: (%i,%i)\r\n",
                            (int)leftspeed, (int)rightspeed);
-                    motors.sendSpeeds();
+                    motors.sendSpeeds();  //send the to the sabertooth
                 }
             }
         }
+        //sleep the thread for a millisecond
+        //so the CPU doesn't shit the bed...
         this_thread::sleep_for(chrono::milliseconds(1));
     }
 }

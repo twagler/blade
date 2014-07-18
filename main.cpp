@@ -59,7 +59,10 @@ void ControlSwitcher()
 
         //join the thread when booted out of auto
         if(Navigate.joinable())
+        {
             Navigate.join();
+            printf("Killed Waypoint Navigation thread...\r\n");
+        }
 
         //give the CPU a break...
         this_thread::sleep_for(chrono::milliseconds(500));

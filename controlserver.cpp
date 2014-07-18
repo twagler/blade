@@ -176,6 +176,8 @@ void ControlServer::ParseCommand(char buf[])
     ss.str(string(buf));
     ss >> command >> value;
 
+    //command should probably be an enum
+    //then we could switch() it
     if(command=="mode")
     {
         if(value=="autonomous")
