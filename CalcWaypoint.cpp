@@ -1,5 +1,13 @@
 #include "mower.h"
+#include <vector>
 #define ROBOT_WIDTH .000005
+using namespace std;
+
+struct COORDINATE {
+    bool mowed;
+    bool object;
+    bool edge;
+};
 
 /*
 theta = arctan((cornery[2] - cornery[1])/(cornerx[2]-cornerx[1]));
@@ -74,3 +82,38 @@ void CalcWaypoint()
 
     */
 }
+
+class LawnMap
+{
+public:
+    vector<int[4][2]> boustrophedons; //vector containing known boustrophedons.  Each boustrophendon has 4 corners, each with an x and y component
+    vector< vector<COORDINATE> > map;
+    int xSize;
+    int ySize;
+
+    LawnMap();
+    LawnMap(int x, int y);
+
+
+};
+
+LawnMap::LawnMap(void){
+    //not used
+}
+
+LawnMap::LawnMap(int x, int y){
+    this->xSize = x;
+    this->ySize = y;
+    for(int i=0;i<x;i++){
+        vector<COORDINATE> xRow;
+        for(int j=0;j<y;j++){
+            COORDINATE yRow;
+            yRow.edge = false;
+            yRow.mowed = false;
+            yRow.object = false;
+            xRow.push_back(yRow);
+        }
+        this->map.push_back(xRow);
+    }
+}
+
