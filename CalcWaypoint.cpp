@@ -1,13 +1,7 @@
 #include "mower.h"
-#include <vector>
+#include "lawnmap.h"
+#include <exception>
 #define ROBOT_WIDTH .000005
-using namespace std;
-
-struct COORDINATE {
-    bool mowed;
-    bool object;
-    bool edge;
-};
 
 /*
 theta = arctan((cornery[2] - cornery[1])/(cornerx[2]-cornerx[1]));
@@ -20,8 +14,11 @@ nextwaypointx = threewaypointsagox + xcomponent
 nextwaypointy = threewaypointsagoy + ycomponent
 
 */
+void CalcWaypoint(){
+    //not used, to be deleted eventually
+}
 
-void CalcWaypoint()
+void CalcWaypoint(LawnMap &map)
 {
     //if moving up/down
             //LATwaypoint[incwaypoint(2)]=LATwaypoint[incwaypoint(1)]+ROBOT_WIDTH;
@@ -34,21 +31,48 @@ void CalcWaypoint()
 
     /*Alan's bitchin' algorithm of sexiness:
 
-    Assume we've already generated our boundaries.  It is a closed shape.
+    Map should have been generated previously and passed in as the variable 'map'.
 
-    First step: sanity check.  Are we in-bounds?  If not, STOP.
+    First step: sanity check.  Are we in-bounds?  If not, STOP. */
 
-    Run function to identify Boustrophedon sections, assuming no obsticles.
+    if(! map.boundaryCheck() ){
+        throw std::exception(); //Mower out of bounds, Correct course
+    }
+
+    /* Run function to identify Boustrophedon sections, assuming no obsticles.
         take into account known objects from previous mowings.
 
 
     Execution:
     Identify current position
 
-    If on a Boustrophedon area:
+    Did we just get to where we were going?
+    Check if toGPS is the same as currentGPS. */
+
+    if( map.atWaypoint()) {
+        //we have finished our run, should either be finished with boustrophedon or turning around
+        //can we turn?
+        if( map.canTurn()){
+            //turn chickever way we need to.
+            map.nextRow();
+
+        }
+    }
+
+    /*If on a Boustrophedon area
+        If finished mowing the Boustrophedon, move on
         Are we on a corner?
+
+        Are we on an edge?
+
+        Are we in the middle?
+            Obsticle?
+            In transit?
+            Is Boustrophedon finished?  If so, move on.
+            If not, need to mow it.
+
             If so, Boustrophedon that shit.
-            If not, divide Boustrophedon into 2+ Boustrophedons and Boustrophedon that shit
+            If not, go to a corner
 
     Else if not on a Boustrophedon area:
         Spiral out until an object, boundary, or Boustrophedon is hit.
@@ -81,39 +105,6 @@ void CalcWaypoint()
 
 
     */
-}
 
-class LawnMap
-{
-public:
-    vector<int[4][2]> boustrophedons; //vector containing known boustrophedons.  Each boustrophendon has 4 corners, each with an x and y component
-    vector< vector<COORDINATE> > map;
-    int xSize;
-    int ySize;
-
-    LawnMap();
-    LawnMap(int x, int y);
-
-
-};
-
-LawnMap::LawnMap(void){
-    //not used
-}
-
-LawnMap::LawnMap(int x, int y){
-    this->xSize = x;
-    this->ySize = y;
-    for(int i=0;i<x;i++){
-        vector<COORDINATE> xRow;
-        for(int j=0;j<y;j++){
-            COORDINATE yRow;
-            yRow.edge = false;
-            yRow.mowed = false;
-            yRow.object = false;
-            xRow.push_back(yRow);
-        }
-        this->map.push_back(xRow);
-    }
 }
 
