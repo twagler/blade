@@ -6,13 +6,19 @@
 struct COORDINATE {
     bool mowed;
     bool object;
-    double currentGPSx;
-    double currentGPSy;
-    double fromGPSx;
-    double fromGPSy;
-    double toGPSx;
-    double toGPSy;
     time_t mowedTime;
+    bool boundary;
+};
+struct BOUSTROPHEDON {
+    int xNE;
+    int yNE;
+    int xNW;
+    int yNW;
+    int xSE;
+    int ySE;
+    int xSW;
+    int ySW;
+    int size;
 };
 
 class LawnMap
@@ -29,6 +35,20 @@ public:
     std::vector< std::vector<COORDINATE> > map;
     int xSize;
     int ySize;
+    void setCurrentGPS(double x, double y);
+    void setFromGPS(double x, double y);
+    void setToGPS(double x, double y);
+    double *getCurrentGPS();
+    double *getToGPS();
+    double *getFromGPS();
+
+private:
+    double currentGPSx;
+    double currentGPSy;
+    double fromGPSx;
+    double fromGPSy;
+    double toGPSx;
+    double toGPSy;
 
 };
 
