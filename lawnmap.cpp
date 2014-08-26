@@ -64,8 +64,13 @@ LawnMap::LawnMap(vector<double[2]> vList){
     //map should be generated
 }
 
-int LawnMap::boundaryCheck(){
+int LawnMap::boundaryCheck(double[2]){
         //This should check the map and ensure that the current position is in bouonds.
+        //get dimensions of map
+        int xSize = this->map.size();
+        int ySize = this->map.at(0).size();
+
+
 
         //If it is in bounds return 1
 
@@ -89,13 +94,33 @@ int LawnMap::atWaypoint(){
 int LawnMap::canTurn(){
     //This function checks to see if we can turn.  If so, we are not done with the boustrophedon, return 1.  If not, we are done, return 0.
     //N=0, S=1, E=2, W=3
-    if((this->getCurrentGPS())[0] < (this->getFromGPS())[0]){
-            //going West
-    }
-    else if((this->getCurrentGPS()[1] < (this->getCurrentGPS()[1] ))){
+    double currentGPS[2] = this->getCurrentGPS();
+    double toGPS[2] = this->getToGPS();
+    double fromGPS[2] = this->getFromGPS();
+    int position[2];
 
+    //get the position from our current GPS coordinate
+
+    position = this->getCoordinatesFromGPS(&currentGPS);
+
+    if((currentGPS())[0] < (fromGPS())[0]){
+        //going West, check to the North and South
+
+        this->setToGPS(position);
     }
-    //was falling asleep, need to finish this
+    else if((currentGPS()[0] > (fromGPS()[0] ))){
+        //going East, check to the North and South
+    }
+    else if((currentGPS()[1] < (fromGPS()[1] ))){
+        //going South, check to the East and West
+    }
+    else if((currentGPS()[1] > (fromGPS()[1] ))){
+        //going North, check to the East and West
+    }
+
+
+
+
     return 0; //placeholder
 }
 
@@ -106,35 +131,93 @@ void LawnMap::nextRow(){
 BOUSTROPHEDON findMaxRectangle(BOUSTROPHEDON rect){
     //need to recursively call with expanded x and y coordinates
 
-    //I really need to go over this, i was asleep when I coded it.
-
     int retval1;
     int retval2;
     BOUSTROPHEDON b1;
     BOUSTROPHEDON b2;
+    int b1XSize;
+    int b1YSize;
+    int b2XSize;
+    int b2YSize;
+    int b1Size;
+    int b2Size;
 
     b1 = rect;
     b2 = rect;
 
-    if(lineGood(b1.xNE,b1.xSE++)) {
+
+    retval1 = this.lineGood(b1.xNE++,b1.yNE,b1.xSE++,b1.ySE);
+    if(retval1 == 1) {
         //line  good.  keep calling and return the bigger of the two.
         b1.xNE++;
         b1.xSE++;
         b1 = findMaxRectangle(b1);
     }
-    if(lineGood(b2.xNW++,b2.xNE++)) {
+
+    retval2 = this.lineGood(b2.xNW,b2.yNW++,b2.xNE,b2.yNE++);
+    if(retval2 == 1) {
         //line  good.  keep calling and return the bigger of the two.
-        b1.xNE++;
-        b1.xSE++;
-        b1 = findMaxRectangle(b1);
+        b2.yNE++;
+        b2.ySE++;
+        b2 = findMaxRectangle(b1);
     }
 
+    if(retval1 == 1 && retval2 == 0){
+        //b1 is good, b2 is bad.  Return b1
+        return b1;
+    }
+    else if(retval1 == 0 && retval2 == 1){
+        //b2 is good, b1 is bad.  Return b2
+        return b2;
+    }
+    else if(retval1 == 0 && retval2 == 0){
+        //neither option worked, return null
+        return null;
+    }
+    else if(retval1 == 1 && retval2 == 1){
+        //both options worked, need to return the larger of the two
+        b1XSize = b1.xSE - b1.xSW;
+        b1YSize = b1.yNW - b1.ySW;
+        b2XSize = b2.xSE - b2.xSW;
+        b2YSize = b2.yNW - b2.ySW;
+        b1Size = b1XSize*b1YSize;
+        b2Size = b2XSize*b2YSize;
 
-    b2.yNW++;
-    b2.yNE++;
+        if(b1Size > b2Size){
+            return b1;
+        }
+        else{
+            return b2;
+        }
 
-    //need to check each and make sure line we added is good.
-    //need to update size of rect
+    }
+    //if we get here, something went wrong.
+    return null;
+}
 
-    retval1 = findMaxRectangle()
+boolean lineGood(int x1, int y1, int x2, int y2){
+    if(x1 == x2){
+        //x is the same, see if line on y axis works
+        for(int i=0;i<(y2-y1);i++){
+            if(this.map.at(y1+i).at(y1).object == true || this.map.at(x1+i).at(y1).boundary == true) {
+                //there is an object or boundary in our way
+                return false;
+            }
+        }
+    }
+    else if(y1 == y2){
+        //y is the same, check x axis
+        for(int i=0;i<(x2-x1);i++){
+            if(this.map.at(x1+i).at(y1).object == true || this.map.at(x1+i).at(y1).boundary == true) {
+                //there is an object or boundary in our way
+                return false;
+            }
+        }
+
+    }
+    else {
+        //something wrong, return null
+        return null;
+    }
+    return true;
 }

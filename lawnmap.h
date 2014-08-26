@@ -26,10 +26,11 @@ class LawnMap
 public:
     LawnMap();
     LawnMap(std::vector<double[2]>);
-    int boundaryCheck();
+    int boundaryCheck(double[2]);
     int atWaypoint();
     int canTurn();
     void nextRow();
+    bool lineGood(int, int, int, int);
 
     std::vector<int[4][2]> boustrophedons; //vector containing known boustrophedons.  Each boustrophendon has 4 corners, each with an x and y component
     std::vector< std::vector<COORDINATE> > map;
