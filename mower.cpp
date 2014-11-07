@@ -24,31 +24,6 @@ MotorDriver motors;
 
 NMEAParser parser;
 
-void ReadGPS_RTKLIB()
-{
-    cout << "Starting RTKLIB GPS Reception thread...\r\n";
-    float lat, lon;
-    int time;
-    char trash;
-
-    ifstream GPSfile;
-    GPSfile.open("input.txt");
-
-    while(true)
-    {
-        GPSfile >> lat >> trash >> lon >> trash >> time;
-
-        gps_lock.lock();
-        gps.setLatitude(lat);
-        gps.setLongitude(lon);
-        //gps.setTime(time);
-        gps_lock.unlock();
-        cv_gps.notify_one();
-        this_thread::sleep_for(chrono::milliseconds(500));
-    }
-    GPSfile.close();
-}
-
 void ReadGPS_NMEA()
 {
     cout << "Starting NMEA GPS Reception thread...\r\n";
