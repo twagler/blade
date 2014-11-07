@@ -35,9 +35,9 @@ void CalcWaypoint(LawnMap &map)
 
     First step: sanity check.  Are we in-bounds?  If not, STOP. */
 
-    if(! map.boundaryCheck() ){
-        throw std::exception(); //Mower out of bounds, Correct course
-    }
+    //if(! map.boundaryCheck() ){
+    //    throw std::exception(); //Mower out of bounds, Correct course
+   // }
 
     /* Run function to identify Boustrophedon sections, assuming no obsticles.
         take into account known objects from previous mowings.
@@ -49,15 +49,15 @@ void CalcWaypoint(LawnMap &map)
     Did we just get to where we were going?
     Check if toGPS is the same as currentGPS. */
 
-    if( map.atWaypoint()) {
+    //if( map.atWaypoint()) {
         //we have finished our run, should either be finished with boustrophedon or turning around
         //can we turn?
-        if( map.canTurn()){
+        //if( map.canTurn()){
             //turn chickever way we need to.
-            map.nextRow();
+            //map.nextRow();
 
-        }
-    }
+        //}
+    //}
 
     /*If on a Boustrophedon area
         If finished mowing the Boustrophedon, move on

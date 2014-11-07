@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     ultrasonic.cpp \
     libGPIO/libgpio.cpp \
     NMEAParser/NMEAParser.cpp \
-    serialport.cpp
+    serialport.cpp \
+    lawnmap.cpp
 
 HEADERS += \
     gps.h \
@@ -30,7 +31,8 @@ HEADERS += \
     libgpio.h \
     libGPIO/libgpio.h \
     NMEAParser/NMEAParser.h \
-    serialport.h
+    serialport.h \
+    lawnmap.h
 
 OTHER_FILES += \
     README.md \

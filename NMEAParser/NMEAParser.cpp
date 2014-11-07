@@ -12,47 +12,81 @@ NMEAParser::NMEAParser()
 {
 }
 
-
 NMEAParser::~NMEAParser()
 {}
 
-void NMEAParser::read_serial()
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr2(struct sockaddr *sa)
 {
-    struct termios tio;
-    struct termios stdio;
-    int tty_fd;
-    unsigned char c = 0;
-
-    memset(&stdio,0,sizeof(stdio));
-    stdio.c_iflag=0;
-    stdio.c_oflag=0;
-    stdio.c_cflag=0;
-    stdio.c_lflag=0;
-    stdio.c_cc[VMIN]=1;
-    stdio.c_cc[VTIME]=0;
-    tcsetattr(STDOUT_FILENO,TCSANOW,&stdio);
-    tcsetattr(STDOUT_FILENO,TCSAFLUSH,&stdio);
-    fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);       // make the reads non-blocking
-
-    memset(&tio,0,sizeof(tio));
-    tio.c_iflag=0;
-    tio.c_oflag=0;
-    tio.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
-    tio.c_lflag=0;
-    tio.c_cc[VMIN]=1;
-    tio.c_cc[VTIME]=5;
-
-    tty_fd=open(SERIAL_DEVICE, O_RDWR);
-    cfsetospeed(&tio,B115200);            // 115200 baud
-    cfsetispeed(&tio,B115200);            // 115200 baud
-
-    tcsetattr(tty_fd,TCSANOW,&tio);
-
-    while(true)
-    {
-        read(tty_fd,&c,1);
-        ParseRecursive(c);
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
     }
+
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
+int NMEAParser::read_RTKLIBserver()
+{
+    int sockfd, numbytes;
+    char buf[MAXDATASIZE];
+    struct addrinfo hints, *servinfo, *p;
+    int rv;
+    char s[INET6_ADDRSTRLEN];
+
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    if ((rv = getaddrinfo(SERVER, PORT, &hints, &servinfo)) != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        return 1;
+    }
+
+    // loop through all the results and connect to the first we can
+    for(p = servinfo; p != NULL; p = p->ai_next) {
+        if ((sockfd = socket(p->ai_family, p->ai_socktype,
+                             p->ai_protocol)) == -1) {
+            perror("client: socket");
+            continue;
+        }
+
+        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(sockfd);
+            perror("client: connect");
+            continue;
+        }
+
+        break;
+    }
+
+    if (p == NULL) {
+        fprintf(stderr, "client: failed to connect\n");
+        return 2;
+    }
+
+    inet_ntop(p->ai_family, get_in_addr2((struct sockaddr *)p->ai_addr),
+              s, sizeof s);
+    printf("client: connecting to %s\n", s);
+
+    freeaddrinfo(servinfo); // all done with this structure
+
+    while(1)
+    {
+        if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+            perror("recv");
+            exit(1);
+        }
+
+        //buf[numbytes] = '\0';
+
+        //printf("\r\nclient received:\r\n%s",buf);
+
+        Parse(buf,numbytes);
+    }
+
+    close(sockfd);
+
+    return 0;
 }
 
 int axtoi( const char *hexStg )
@@ -267,39 +301,39 @@ GPS& NMEAParser::GetActualGPSInfo()
 }
 
 /*
-GPGGA Sentence format
+  GPGGA Sentence format
 
-$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M, ,*47
-   |   |	  |			 |			 | |  |	  |		  |      | |
-   |   |	  |			 |			 | |  |	  |		  |		 | checksum data
-   |   |	  |			 |			 | |  |	  |		  |		 |
-   |   |	  |			 |			 | |  |	  |		  |		 empty field
-   |   |	  |			 |			 | |  |	  |		  |
-   |   |	  |			 |			 | |  |	  |		  46.9,M Height of geoid (m) above WGS84 ellipsoid
-   |   |	  |			 |			 | |  |	  |
-   |   |	  |			 |			 | |  |	  545.4,M Altitude (m) above mean sea level
-   |   |	  |			 |			 | |  |
-   |   |	  |			 |			 | |  0.9 Horizontal dilution of position (HDOP)
-   |   |	  |			 |			 | |
-   |   |	  |			 |			 | 08 Number of satellites being tracked
-   |   |	  |			 |			 |
-   |   |	  |			 |			 1 Fix quality:	0 = invalid
-   |   |	  |			 |							1 = GPS fix (SPS)
-   |   |	  |			 |							2 = DGPS fix
-   |   |	  |			 |							3 = PPS fix
-   |   |	  |			 |							4 = Real Time Kinematic
-   |   |	  |			 |							5 = Float RTK
-   |   |	  |			 |							6 = estimated (dead reckoning) (2.3 feature)
-   |   |	  |			 |							7 = Manual input mode
-   |   |	  |			 |							8 = Simulation mode
-   |   |	  |			 |
-   |   |	  |			 01131.000,E Longitude 11 deg 31.000' E
-   |   |	  |
-   |   |	  4807.038,N Latitude 48 deg 07.038' N
-   |   |
-   |   123519 Fix taken at 12:35:19 UTC
-   |
-   GGA Global Positioning System Fix Data
+  $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M, ,*47
+  |   |	  |			 |			 | |  |	  |		  |      | |
+  |   |	  |			 |			 | |  |	  |		  |		 | checksum data
+  |   |	  |			 |			 | |  |	  |		  |		 |
+  |   |	  |			 |			 | |  |	  |		  |		 empty field
+  |   |	  |			 |			 | |  |	  |		  |
+  |   |	  |			 |			 | |  |	  |		  46.9,M Height of geoid (m) above WGS84 ellipsoid
+  |   |	  |			 |			 | |  |	  |
+  |   |	  |			 |			 | |  |	  545.4,M Altitude (m) above mean sea level
+  |   |	  |			 |			 | |  |
+  |   |	  |			 |			 | |  0.9 Horizontal dilution of position (HDOP)
+  |   |	  |			 |			 | |
+  |   |	  |			 |			 | 08 Number of satellites being tracked
+  |   |	  |			 |			 |
+  |   |	  |			 |			 1 Fix quality:	0 = invalid
+  |   |	  |			 |							1 = GPS fix (SPS)
+  |   |	  |			 |							2 = DGPS fix
+  |   |	  |			 |							3 = PPS fix
+  |   |	  |			 |							4 = Real Time Kinematic
+  |   |	  |			 |							5 = Float RTK
+  |   |	  |			 |							6 = estimated (dead reckoning) (2.3 feature)
+  |   |	  |			 |							7 = Manual input mode
+  |   |	  |			 |							8 = Simulation mode
+  |   |	  |			 |
+  |   |	  |			 01131.000,E Longitude 11 deg 31.000' E
+  |   |	  |
+  |   |	  4807.038,N Latitude 48 deg 07.038' N
+  |   |
+  |   123519 Fix taken at 12:35:19 UTC
+  |
+  GGA Global Positioning System Fix Data
 
 */
 void NMEAParser::ProcessGPGGA(const char *buf, const unsigned int bufSize)
@@ -496,29 +530,29 @@ void NMEAParser::ProcessGPRMB(const char *buf, const unsigned int bufSize)
 }
 
 /*
-Format
+  Format
 
   $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
-     |	 |		| |			 |			 |	   |	 |		|	   |
-     |	 |		| |			 |			 |	   |	 |		|	   *6A Checksum data
-     |	 |		| |			 |			 |	   |	 |		|
-     |	 |		| |			 |			 |	   |	 |		003.1,W Magnetic Variation
-     |	 |		| |			 |			 |	   |	 |
-     |	 |		| |			 |			 |	   |	 230394 Date - 23rd of March 1994
-     |	 |		| |			 |			 |	   |
-     |	 |		| |			 |			 |	   084.4 Track angle in degrees
-     |	 |		| |			 |			 |
-     |	 |		| |			 |			 022.4 Speed over the ground in knots
-     |	 |		| |			 |
-     |	 |		| |			 01131.000,E Longitude 11 deg 31.000' E
-     |	 |		| |
-     |	 |		| 4807.038,N Latitude 48 deg 07.038' N
-     |	 |		|
-     |	 |		A Status A=active or V=Void
-     |	 |
-     |	 123519 Fix taken at 12:35:19 UTC
-     |
-     RMC Recommended Minimum sentence C
+  |	 |		| |			 |			 |	   |	 |		|	   |
+  |	 |		| |			 |			 |	   |	 |		|	   *6A Checksum data
+  |	 |		| |			 |			 |	   |	 |		|
+  |	 |		| |			 |			 |	   |	 |		003.1,W Magnetic Variation
+  |	 |		| |			 |			 |	   |	 |
+  |	 |		| |			 |			 |	   |	 230394 Date - 23rd of March 1994
+  |	 |		| |			 |			 |	   |
+  |	 |		| |			 |			 |	   084.4 Track angle in degrees
+  |	 |		| |			 |			 |
+  |	 |		| |			 |			 022.4 Speed over the ground in knots
+  |	 |		| |			 |
+  |	 |		| |			 01131.000,E Longitude 11 deg 31.000' E
+  |	 |		| |
+  |	 |		| 4807.038,N Latitude 48 deg 07.038' N
+  |	 |		|
+  |	 |		A Status A=active or V=Void
+  |	 |
+  |	 123519 Fix taken at 12:35:19 UTC
+  |
+  RMC Recommended Minimum sentence C
 
 */
 void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
@@ -666,7 +700,7 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
     double magneticVariation = atof(auxBuf);
     if((p2 = strchr(p1, '*')) == NULL)
         return;
-    if(p2 - p1 > 1)
+    if(p2 - p1 > 3)
         return;
     if(*p1 == 'W')
         latitude = -latitude;

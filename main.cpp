@@ -9,7 +9,7 @@ int main() {
     thread ReceiveGPS(ReadGPS_NMEA);
     thread AdjustSpeed(SetSpeeds);
     thread ControlSupervisor(ControlSwitcher);
-    thread PS3(JoystickTest);
+    //thread PS3(JoystickTest);
     thread NetworkControl(InitTCPServer);
 
     while(1)  //bad bad bad bad bad
@@ -26,7 +26,7 @@ void InitTCPServer(void)
 void InitGPSThread(void)
 {
     printf("Starting GPS Parsing Thread...\r\n");
-    parser.read_serial();  //while(true) inside
+    parser.read_RTKLIBserver();  //while(true) inside
 }
 
 void InitUltraServer(void)

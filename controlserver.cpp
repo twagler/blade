@@ -11,7 +11,7 @@
 #include "controlserver.h"
 #include "mower.h"
 
-#define PORT "13333"   // port we're listening on
+#define CONTROL_PORT "13333"   // port we're listening on
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
@@ -40,7 +40,7 @@ int ControlServer::initialize()
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-    if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0)
+    if ((rv = getaddrinfo(NULL, CONTROL_PORT, &hints, &ai)) != 0)
     {
         fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
         exit(1);

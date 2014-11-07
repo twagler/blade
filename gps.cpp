@@ -4,6 +4,10 @@ GPS::GPS()
 {
     myLatitude = 0;
     myLongitude = 0;
+    myAltitude = 0;
+    mySentenceCount = 0;
+    mySignalQuality = 0;
+    mySatelitesInUse = 0;
     //myTime = 0;
 }
 
