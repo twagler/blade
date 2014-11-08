@@ -31,6 +31,12 @@ void ReadGPS_NMEA()
     while(true)
     {
         gps_lock.lock();
+        //***FIXME***//
+        //this function just polls the parser
+        //
+        //The parser should output a GPS solution to
+        //the Waypoint nav function every time it gets
+        //a solution.
         gps = parser.GetActualGPSInfo();
         gps_lock.unlock();
         cv_gps.notify_one();

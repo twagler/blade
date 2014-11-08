@@ -28,6 +28,8 @@ void WaypointNavigation() {
 
     bool first = true;
 
+    GPS way, way2;
+
     while(Autonomous)
     {
         unique_lock<mutex> lk_gps(gps_lock);
@@ -41,10 +43,18 @@ void WaypointNavigation() {
                 LONwaypoint[wayindex+1] << "\r\n";
         //DEBUG
 
+        /*OLD METHOD
         DXpath = LATwaypoint[wayindex+1] - gps.getLatitude();  //not correct
         DYpath = LONwaypoint[wayindex+1] - gps.getLongitude(); //not correct
 
         distance = sqrt((DXpath*DXpath) + (DYpath*DYpath));    //earth is flat? (close enough)
+        */
+
+        way.setLatitude(LATwaypoint[wayindex+1]);
+        way.setLongitude(LONwaypoint[wayindex+1]);
+
+        distance = gps_distance(way, gps);
+
         cout << "Distance to target: " << distance << "\r\n";
 
         if (distance < ARRIVED || first)  //arrived @ waypoint
@@ -52,15 +62,12 @@ void WaypointNavigation() {
             CalcWaypoint();
             wayindex++;
 
-            GPS way;
-            GPS way2;
-
-            way.setLatitude(LATwaypoint[wayindex]);
-            way.setLongitude(LONwaypoint[wayindex]);
+            //way.setLatitude(LATwaypoint[wayindex]);
+            //way.setLongitude(LONwaypoint[wayindex]);
             way2.setLatitude(LATwaypoint[wayindex+1]);
             way2.setLongitude(LONwaypoint[wayindex+1]);
 
-            PathLength = gps_distance(way,way2);
+            PathLength = gps_distance(gps,way2);
 
             printf("path length: %fcm\r\n",PathLength);
             first = false;

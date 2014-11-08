@@ -2,8 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#define SERVER "192.168.1.235"
-#define PORT "1335"
+#define SERVER "tegra-ubuntu"
+#define PORT "1334"
 #define MAXDATASIZE 1023
 
 #include "gps.h"
@@ -32,6 +32,7 @@ class NMEAParser
 
  private:
 
+  int TCPinit();
   void ParseRecursive(const char ch);
   void ParseNMEASentence(const char *addressField, const char *buf, const unsigned int bufSize);
   void ProcessGPGGA(const char *buf, const unsigned int bufSize);

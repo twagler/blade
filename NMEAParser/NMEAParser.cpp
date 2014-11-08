@@ -25,10 +25,9 @@ void *get_in_addr2(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-int NMEAParser::read_RTKLIBserver()
+int NMEAParser::TCPinit()
 {
-    int sockfd, numbytes;
-    char buf[MAXDATASIZE];
+    int sockfd;
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
@@ -66,26 +65,31 @@ int NMEAParser::read_RTKLIBserver()
 
     inet_ntop(p->ai_family, get_in_addr2((struct sockaddr *)p->ai_addr),
               s, sizeof s);
+
     printf("client: connecting to %s\n", s);
 
     freeaddrinfo(servinfo); // all done with this structure
 
+    return sockfd;
+
+}
+
+int NMEAParser::read_RTKLIBserver()
+{
+    int sockfd, numbytes;
+    char buf[MAXDATASIZE];
+    sockfd = this->TCPinit();
     while(1)
     {
-        if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-            perror("recv");
+        if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1)
+        {
+            perror("NMEAParser recv error...exiting\r\n");
             exit(1);
         }
-
-        //buf[numbytes] = '\0';
-
-        //printf("\r\nclient received:\r\n%s",buf);
-
         Parse(buf,numbytes);
     }
 
     close(sockfd);
-
     return 0;
 }
 
@@ -700,7 +704,7 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
     double magneticVariation = atof(auxBuf);
     if((p2 = strchr(p1, '*')) == NULL)
         return;
-    if(p2 - p1 > 3)
+    if(p2 - p1 > 3) //this was 1. Now 3 because we have an extra 'A'
         return;
     if(*p1 == 'W')
         latitude = -latitude;
