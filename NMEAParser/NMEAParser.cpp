@@ -89,17 +89,8 @@ int NMEAParser::read_RTKLIBserver()
         //The above recv will grab multiple lines at once
         //We need to split the buf on the '\n' character
 
-        //pch = strtok(buf, "\n");
+        Parse(buf,numbytes);
 
-        //while(pch !=NULL)
-        //{
-            //numbytes = sizeof pch;
-            Parse(buf,numbytes);
-            //pch = strtok (NULL, "\n");
-        //}
-
-            for (int i=0;i<numbytes;i++)
-                buf[i] = '\000';
     }
 
     close(sockfd);
@@ -140,7 +131,6 @@ int axtoi( const char *hexStg )
 
 void NMEAParser::Parse(const char *buf, const unsigned int bufSize)
 {
-    printf("%s", buf);
     for( unsigned int i = 0; i < bufSize; i++ )
         ParseRecursive(buf[i]);
 }
@@ -156,7 +146,7 @@ void NMEAParser::ParseRecursive(const char ch)
                            ValidSentence };
 
     static const unsigned int ADDRESS_FIELD_MAX_LENGTH = 10;
-    static const unsigned int NMEA_SEQUENCE_MAX_LENGTH = 81;
+    static const unsigned int NMEA_SEQUENCE_MAX_LENGTH = 101;
 
     static NMEAParserState m_State = SearchForSOS;
     static unsigned int m_CalcChecksum;
@@ -751,7 +741,6 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
         return;
     if(p2 - p1 > 1)
         return;
-
 
     // Set the values of m_GPSInfo
     myGPSInfo.setLatitude(latitude);
