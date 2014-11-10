@@ -14,89 +14,6 @@ NMEAParser::NMEAParser()
 NMEAParser::~NMEAParser()
 {}
 
-// get sockaddr, IPv4 or IPv6:
-void *get_in_addr2(struct sockaddr *sa)
-{
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
-int NMEAParser::TCPinit()
-{
-    int sockfd;
-    struct addrinfo hints, *servinfo, *p;
-    int rv;
-    char s[INET6_ADDRSTRLEN];
-
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-
-    if ((rv = getaddrinfo(SERVER, PORT, &hints, &servinfo)) != 0) {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return 1;
-    }
-
-    // loop through all the results and connect to the first we can
-    for(p = servinfo; p != NULL; p = p->ai_next) {
-        if ((sockfd = socket(p->ai_family, p->ai_socktype,
-                             p->ai_protocol)) == -1) {
-            perror("client: socket");
-            continue;
-        }
-
-        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-            close(sockfd);
-            perror("client: connect");
-            continue;
-        }
-
-        break;
-    }
-
-    if (p == NULL) {
-        fprintf(stderr, "client: failed to connect\n");
-        return 2;
-    }
-
-    inet_ntop(p->ai_family, get_in_addr2((struct sockaddr *)p->ai_addr),
-              s, sizeof s);
-
-    printf("client: connecting to %s\n", s);
-
-    freeaddrinfo(servinfo); // all done with this structure
-
-    return sockfd;
-
-}
-
-int NMEAParser::read_RTKLIBserver()
-{
-    int sockfd, numbytes;
-    char buf[MAXDATASIZE];
-    char * pch;
-    sockfd = this->TCPinit();
-    while(1)
-    {
-        if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1)
-        {
-            perror("NMEAParser recv error...exiting\r\n");
-            exit(1);
-        }
-        //The above recv will grab multiple lines at once
-        //We need to split the buf on the '\n' character
-
-        Parse(buf,numbytes);
-
-    }
-
-    close(sockfd);
-    return 0;
-}
-
 int axtoi( const char *hexStg )
 {
     int n = 0;         // position in string
@@ -129,10 +46,12 @@ int axtoi( const char *hexStg )
     return (intValue);
 }
 
-void NMEAParser::Parse(const char *buf, const unsigned int bufSize)
+GPS& NMEAParser::Parse(const char *buf, const unsigned int bufSize)
 {
     for( unsigned int i = 0; i < bufSize; i++ )
         ParseRecursive(buf[i]);
+
+    return myGPSInfo;
 }
 
 void NMEAParser::ParseRecursive(const char ch)
@@ -304,11 +223,6 @@ void NMEAParser::ParseNMEASentence(const char *addressField,
     }
 }
 
-GPS& NMEAParser::GetActualGPSInfo()
-{
-    return myGPSInfo;
-}
-
 /*
   GPGGA Sentence format
 
@@ -347,9 +261,6 @@ GPS& NMEAParser::GetActualGPSInfo()
 */
 void NMEAParser::ProcessGPGGA(const char *buf, const unsigned int bufSize)
 {
-    // To disable handling this sentence uncomment the next line
-    // return;
-
 
     char auxBuf[10];
     const char *p1 = buf, *p2;
@@ -517,7 +428,6 @@ void NMEAParser::ProcessGPGGA(const char *buf, const unsigned int bufSize)
     myGPSInfo.setAltitude(altitude);
     myGPSInfo.setSignalQuality(quality);
     myGPSInfo.setSatelitesInUse(satelitesInUse);
-    myGPSInfo.incrementSentenceCount();
 
     //m_GPSInfo.m_time
 
@@ -565,6 +475,8 @@ void NMEAParser::ProcessGPRMB(const char *buf, const unsigned int bufSize)
 */
 void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
 {
+    return; // skip processing this sentence
+
     char auxBuf[10];
     const char *p1 = buf, *p2;
 
@@ -739,11 +651,6 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
         return;
     if(p2 - p1 > 1)
         return;
-
-    // Set the values of m_GPSInfo
-    myGPSInfo.setLatitude(latitude);
-    myGPSInfo.setLongitude(longitude);
-    myGPSInfo.incrementSentenceCount();
 }
 
 void NMEAParser::ProcessGPZDA(const char *buf, const unsigned int bufSize)

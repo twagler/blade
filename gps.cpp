@@ -5,7 +5,6 @@ GPS::GPS()
     myLatitude = 0;
     myLongitude = 0;
     myAltitude = 0;
-    mySentenceCount = 0;
     mySignalQuality = 0;
     mySatelitesInUse = 0;
     //myTime = 0;
@@ -29,10 +28,6 @@ double GPS::getLongitude() const
 double GPS::getAltitude() const
 {
     return myAltitude;
-}
-unsigned long GPS::getSentenceCount() const
-{
-    return mySentenceCount;
 }
 unsigned int GPS::getSignalQuality() const
 {
@@ -61,10 +56,6 @@ void GPS::setAltitude(double alt)
 void GPS::setSentenceCount(unsigned long sent_count)
 {
     mySentenceCount = sent_count;
-}
-void GPS::incrementSentenceCount()
-{
-    mySentenceCount++;
 }
 void GPS::setSignalQuality(unsigned int sig_qual)
 {

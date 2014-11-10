@@ -2,10 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#define SERVER "tegra-ubuntu"
-#define PORT "1334"
-#define MAXDATASIZE 32768
-
 #include "gps.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,25 +9,16 @@
 #include <fcntl.h>
 #include <ctype.h>      // needed for isalpha(), etc...
 #include <string.h>     // needed for memsetc++
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 
 class NMEAParser  
 {
  public:
   NMEAParser();
   virtual ~NMEAParser();
-  void Parse(const char *buf, const unsigned int bufSize);
-  GPS& GetActualGPSInfo();
-  int read_RTKLIBserver();
+  GPS& Parse(const char *buf, const unsigned int bufSize);
 
  private:
 
-  int TCPinit();
   void ParseRecursive(const char ch);
   void ParseNMEASentence(const char *addressField, const char *buf, const unsigned int bufSize);
   void ProcessGPGGA(const char *buf, const unsigned int bufSize);

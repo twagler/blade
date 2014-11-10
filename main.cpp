@@ -4,7 +4,6 @@ using namespace std;
 
 int main() {
 
-    thread readgps(InitGPSThread);
     //thread RangeSensors(InitUltraServer);
     thread ReceiveGPS(ReadGPS_NMEA);
     thread AdjustSpeed(SetSpeeds);
@@ -22,11 +21,6 @@ void InitTCPServer(void)
     ControlServer cs;
     cs.run();
     while(true);
-}
-void InitGPSThread(void)
-{
-    printf("Starting GPS Parsing Thread...\r\n");
-    parser.read_RTKLIBserver();  //while(true) inside
 }
 
 void InitUltraServer(void)

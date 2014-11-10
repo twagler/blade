@@ -8,6 +8,11 @@ using namespace std;
 #include <string.h>
 #include <math.h>
 #include <signal.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
 #include "gps.h"
 #include "motordriver.h"
 #include "joystick.h"
@@ -26,6 +31,10 @@ using namespace std;
 #define AUTONOMOUS  0
 #define MANUAL      1
 
+#define GPS_SERVER "tegra-ubuntu"
+#define GPS_PORT "1334"
+#define MAXDATASIZE 32768
+
 void UpdateUltraData(void);
 void WaypointNavigation(void);
 void CalcWaypoint(void);
@@ -41,6 +50,7 @@ void InitUltraServer(void);
 void InitGPSThread(void);
 void openSerial(void);
 float gps_distance(GPS,GPS);
+
 
 extern int uSonic[];
 

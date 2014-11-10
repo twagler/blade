@@ -46,10 +46,10 @@ void WaypointNavigation() {
             DeltaXgoal = LATwaypoint[wayindex+1] - LATwaypoint[wayindex];
             DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
 
-            way.setLatitude(LATwaypoint[wayindex]);
-            way.setLongitude(LONwaypoint[wayindex]);
-            way2.setLatitude(LATwaypoint[wayindex+1]);
-            way2.setLongitude(LONwaypoint[wayindex+1]);
+            way.setLatitude(LATwaypoint[wayindex+1]);
+            way.setLongitude(LONwaypoint[wayindex+1]);
+            way2.setLatitude(LATwaypoint[wayindex]);
+            way2.setLongitude(LONwaypoint[wayindex]);
 
             PathLength = gps_distance(way,way2);
             first = false;
@@ -78,10 +78,12 @@ void WaypointNavigation() {
         //DEBUG
         printf("\r\n");
         printf("*********************************************************\r\n");
-        printf("*            Error Correction Algorithm I/O             *\r\n");
+        printf("*           Blade Navigation Inputs/Outputs             *\r\n");
         printf("*-------------------------------------------------------*\r\n");
         printf("*| Current waypoint:\t%.4i\t\t\t       |*\r\n",
                wayindex);
+        printf("*| Solution Quality:\t%i   Number of Satellites: %.2i   |*\r\n",
+               gps.getSignalQuality(), gps.getSatelitesInUse());
         printf("*| Current Location:\t%f N,\t%f E   |*\r\n",
                gps.getLatitude(), gps.getLongitude());
         printf("*| Target Location:\t%f N,\t%f E   |*\r\n",

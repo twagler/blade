@@ -23,7 +23,6 @@ public:
     void setSentenceCount(unsigned long);
     void setSignalQuality(unsigned int);
     void setSatelitesInUse(unsigned int);
-    void incrementSentenceCount(void);
 
     void setTime(tm);
 

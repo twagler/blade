@@ -1,31 +1,25 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
 #include <sstream>
 #include "controlserver.h"
 #include "mower.h"
 
 #define CONTROL_PORT "13333"   // port we're listening on
 
+ControlServer::ControlServer()
+{
+
+}
+
 // get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa)
+void *get_in_addr2(struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
 
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
-ControlServer::ControlServer()
-{
-
 }
 
 int ControlServer::initialize()
@@ -142,7 +136,7 @@ void ControlServer::run(void)
 
                         printf("selectserver: new connection from %s on socket %d\n",
                                inet_ntop(remoteaddr.ss_family,
-                                         get_in_addr((struct sockaddr*)&remoteaddr),
+                                         get_in_addr2((struct sockaddr*)&remoteaddr),
                                          remoteIP, INET6_ADDRSTRLEN), newfd);
                     }
                 }
