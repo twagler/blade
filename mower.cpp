@@ -3,8 +3,8 @@ using namespace std;
 #include "mower.h"
 
 //use an array of waypoints for now.  A more robust mapping mechanism will be required
-double LATwaypoint[] = {37.971417,   37.971495,  37.971497,  37.971432,  37.971417,  37.971495,  37.971497,  37.971432};
-double LONwaypoint[] = {-87.529813, -87.529810, -87.529698, -87.529695, -87.529813, -87.529810, -87.529698, -87.529695};
+double LATwaypoint[] = {38.637431,   38.638,  38.639,  37.971432,  37.971417,  37.971495,  37.971497,  37.971432};
+double LONwaypoint[] = {-86.921618, -86.921618, -86.921620, -87.529695, -87.529813, -87.529810, -87.529698, -87.529695};
 
 //vector<GPS> waypoints;
 
@@ -15,7 +15,7 @@ GPS gps;
 mutex drive_lock;
 condition_variable cv_drive;
 
-bool Autonomous = false;
+bool Autonomous = true;
 bool first = true;
 char adjustment;
 char targetspeed = 55;
@@ -82,8 +82,8 @@ void SetSpeeds()
             motors.setSpeeds(leftspeed, rightspeed);
             motors.sendSpeeds();
         }
-        cout << "Motors: (" << (int)leftspeed << ","
-             << (int)rightspeed << ")\r\n";
+        //cout << "Motors: (" << (int)leftspeed << ","
+        //     << (int)rightspeed << ")\r\n";
     }
 }
 

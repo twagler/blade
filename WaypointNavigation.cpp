@@ -20,8 +20,8 @@ void WaypointNavigation() {
 
     int wayindex = 0;
 
-    int difference=0;
-    int derivative=0;
+    float difference=0;
+    float derivative=0;
 
     bool first = true;
 
@@ -32,20 +32,9 @@ void WaypointNavigation() {
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
-        //DEBUG
-        cout << "Current wayindex: " << wayindex << "\r\n";
-        cout << "Currently at: " << gps.getLatitude() << ", " <<
-                gps.getLongitude() << "\r\n";
-        cout << "Traveling to: " << LATwaypoint[wayindex+1] << ", " <<
-                LONwaypoint[wayindex+1] << "\r\n";
-        //DEBUG
-
         way.setLatitude(LATwaypoint[wayindex+1]);
         way.setLongitude(LONwaypoint[wayindex+1]);
-
         distance = gps_distance(way, gps);
-
-        cout << "Distance to target: " << distance << "\r\n";
 
         if (distance < ARRIVED || first)  //arrived @ waypoint
         {
@@ -57,12 +46,12 @@ void WaypointNavigation() {
             DeltaXgoal = LATwaypoint[wayindex+1] - LATwaypoint[wayindex];
             DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
 
+            way.setLatitude(LATwaypoint[wayindex]);
+            way.setLongitude(LONwaypoint[wayindex]);
             way2.setLatitude(LATwaypoint[wayindex+1]);
             way2.setLongitude(LONwaypoint[wayindex+1]);
 
-            PathLength = gps_distance(gps,way2);
-
-            printf("path length: %fcm\r\n",PathLength);
+            PathLength = gps_distance(way,way2);
             first = false;
         }
 
@@ -82,8 +71,31 @@ void WaypointNavigation() {
 
             drive_lock.unlock();
             cv_drive.notify_one();
+
         }
         lk_gps.unlock();
+
+        //DEBUG
+        printf("\r\n");
+        printf("*********************************************************\r\n");
+        printf("*            Error Correction Algorithm I/O             *\r\n");
+        printf("*-------------------------------------------------------*\r\n");
+        printf("*| Current waypoint:\t%.4i\t\t\t       |*\r\n",
+               wayindex);
+        printf("*| Current Location:\t%f N,\t%f E   |*\r\n",
+               gps.getLatitude(), gps.getLongitude());
+        printf("*| Target Location:\t%f N,\t%f E   |*\r\n",
+               LATwaypoint[wayindex+1], LONwaypoint[wayindex+1]);
+        printf("*| Distance to Target:\t%011.0f centimeters\t       |*\r\n",
+               distance);
+        printf("*-------------------------------------------------------*\r\n");
+        printf("* Path Length: %f centimeters\t\t\t*\r\n", PathLength);
+        printf("* Path Error:\t%f centimeters\t\t\t*\r\n", difference);
+        printf("* Gains:\tP: %f I: %f D: %f\t*\r\n",Kp,Ki,Kd);
+        printf("* Corrections:\tP: %f I: %f D: %f\t*\r\n",
+               difference, integral, derivative);
+        printf("* Total Correction:\t%3d\t\t\t\t*\r\n", adjustment);
+        //DEBUG
     }
     return;
 }

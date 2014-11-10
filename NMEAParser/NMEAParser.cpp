@@ -277,8 +277,6 @@ void NMEAParser::ParseRecursive(const char ch)
 void NMEAParser::ParseNMEASentence(const char *addressField,
                                    const char *buf, const unsigned int bufSize)
 {
-    //debug
-    printf("GPS Received Sentence Type: %s\r\n", addressField);
 
     if( strcmp(addressField, "GPGGA") == 0 )
     {
