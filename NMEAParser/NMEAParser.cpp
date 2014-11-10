@@ -9,8 +9,7 @@
 //////////////////////////////////////////////////////////////////////
 
 NMEAParser::NMEAParser()
-{
-}
+{}
 
 NMEAParser::~NMEAParser()
 {}
@@ -78,6 +77,7 @@ int NMEAParser::read_RTKLIBserver()
 {
     int sockfd, numbytes;
     char buf[MAXDATASIZE];
+    char * pch;
     sockfd = this->TCPinit();
     while(1)
     {
@@ -86,7 +86,20 @@ int NMEAParser::read_RTKLIBserver()
             perror("NMEAParser recv error...exiting\r\n");
             exit(1);
         }
-        Parse(buf,numbytes);
+        //The above recv will grab multiple lines at once
+        //We need to split the buf on the '\n' character
+
+        //pch = strtok(buf, "\n");
+
+        //while(pch !=NULL)
+        //{
+            //numbytes = sizeof pch;
+            Parse(buf,numbytes);
+            //pch = strtok (NULL, "\n");
+        //}
+
+            for (int i=0;i<numbytes;i++)
+                buf[i] = '\000';
     }
 
     close(sockfd);
@@ -127,6 +140,7 @@ int axtoi( const char *hexStg )
 
 void NMEAParser::Parse(const char *buf, const unsigned int bufSize)
 {
+    printf("%s", buf);
     for( unsigned int i = 0; i < bufSize; i++ )
         ParseRecursive(buf[i]);
 }
@@ -273,6 +287,9 @@ void NMEAParser::ParseRecursive(const char ch)
 void NMEAParser::ParseNMEASentence(const char *addressField,
                                    const char *buf, const unsigned int bufSize)
 {
+    //debug
+    printf("GPS Received Sentence Type: %s\r\n", addressField);
+
     if( strcmp(addressField, "GPGGA") == 0 )
     {
         ProcessGPGGA(buf, bufSize);
@@ -308,36 +325,36 @@ GPS& NMEAParser::GetActualGPSInfo()
   GPGGA Sentence format
 
   $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M, ,*47
-  |   |	  |			 |			 | |  |	  |		  |      | |
-  |   |	  |			 |			 | |  |	  |		  |		 | checksum data
-  |   |	  |			 |			 | |  |	  |		  |		 |
-  |   |	  |			 |			 | |  |	  |		  |		 empty field
-  |   |	  |			 |			 | |  |	  |		  |
-  |   |	  |			 |			 | |  |	  |		  46.9,M Height of geoid (m) above WGS84 ellipsoid
-  |   |	  |			 |			 | |  |	  |
-  |   |	  |			 |			 | |  |	  545.4,M Altitude (m) above mean sea level
-  |   |	  |			 |			 | |  |
-  |   |	  |			 |			 | |  0.9 Horizontal dilution of position (HDOP)
-  |   |	  |			 |			 | |
-  |   |	  |			 |			 | 08 Number of satellites being tracked
-  |   |	  |			 |			 |
-  |   |	  |			 |			 1 Fix quality:	0 = invalid
-  |   |	  |			 |							1 = GPS fix (SPS)
-  |   |	  |			 |							2 = DGPS fix
-  |   |	  |			 |							3 = PPS fix
-  |   |	  |			 |							4 = Real Time Kinematic
-  |   |	  |			 |							5 = Float RTK
-  |   |	  |			 |							6 = estimated (dead reckoning) (2.3 feature)
-  |   |	  |			 |							7 = Manual input mode
-  |   |	  |			 |							8 = Simulation mode
-  |   |	  |			 |
-  |   |	  |			 01131.000,E Longitude 11 deg 31.000' E
-  |   |	  |
-  |   |	  4807.038,N Latitude 48 deg 07.038' N
-  |   |
-  |   123519 Fix taken at 12:35:19 UTC
-  |
-  GGA Global Positioning System Fix Data
+    |    |      |		   |		   | |  |	|		|      | |
+    |    |      |		   |		   | |  |	|		|	   | checksum data
+    |    |      |		   |		   | |  |	|		|	   |
+    |    |      |		   |		   | |  |	|		|	   empty field
+    |    |      |		   |		   | |  |	|		|
+    |    |      |		   |		   | |  |	|		46.9,M Height of geoid (m) above WGS84 ellipsoid
+    |    |      |		   |		   | |  |	|
+    |    |      |		   |		   | |  |	545.4,M Altitude (m) above mean sea level
+    |    |      |		   |		   | |  |
+    |    |      |		   |		   | |  0.9 Horizontal dilution of position (HDOP)
+    |    |      |		   |		   | |
+    |    |      |		   |		   | 08 Number of satellites being tracked
+    |    |      |		   |		   |
+    |    |      |		   |		   1 Fix quality:	0 = invalid
+    |    |      |		   |							1 = GPS fix (SPS)
+    |    |      |		   |							2 = DGPS fix
+    |    |      |		   |							3 = PPS fix
+    |    |      |		   |							4 = Real Time Kinematic
+    |    |      |		   |							5 = Float RTK
+    |    |      |		   |							6 = estimated (dead reckoning) (2.3 feature)
+    |    |      |		   |							7 = Manual input mode
+    |    |      |		   |							8 = Simulation mode
+    |    |      |		   |
+    |    |      |		   01131.000,E Longitude 11 deg 31.000' E
+    |    |      |
+    |    |      4807.038,N Latitude 48 deg 07.038' N
+    |    |
+    |    123519 Fix taken at 12:35:19 UTC
+    |
+    GGA Global Positioning System Fix Data
 
 */
 void NMEAParser::ProcessGPGGA(const char *buf, const unsigned int bufSize)
@@ -535,28 +552,27 @@ void NMEAParser::ProcessGPRMB(const char *buf, const unsigned int bufSize)
 
 /*
   Format
-
   $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
-  |	 |		| |			 |			 |	   |	 |		|	   |
-  |	 |		| |			 |			 |	   |	 |		|	   *6A Checksum data
-  |	 |		| |			 |			 |	   |	 |		|
-  |	 |		| |			 |			 |	   |	 |		003.1,W Magnetic Variation
-  |	 |		| |			 |			 |	   |	 |
-  |	 |		| |			 |			 |	   |	 230394 Date - 23rd of March 1994
-  |	 |		| |			 |			 |	   |
-  |	 |		| |			 |			 |	   084.4 Track angle in degrees
-  |	 |		| |			 |			 |
-  |	 |		| |			 |			 022.4 Speed over the ground in knots
-  |	 |		| |			 |
-  |	 |		| |			 01131.000,E Longitude 11 deg 31.000' E
-  |	 |		| |
-  |	 |		| 4807.038,N Latitude 48 deg 07.038' N
-  |	 |		|
-  |	 |		A Status A=active or V=Void
-  |	 |
-  |	 123519 Fix taken at 12:35:19 UTC
-  |
-  RMC Recommended Minimum sentence C
+    |	 |		| |			 |			 |	   |	 |		|	   |
+    |	 |		| |			 |			 |	   |	 |		|	   *6A Checksum data
+    |	 |		| |			 |			 |	   |	 |		|
+    |	 |		| |			 |			 |	   |	 |		003.1,W Magnetic Variation
+    |	 |		| |			 |			 |	   |	 |
+    |	 |		| |			 |			 |	   |	 230394 Date - 23rd of March 1994
+    |	 |		| |			 |			 |	   |
+    |	 |		| |			 |			 |	   084.4 Track angle in degrees
+    |	 |		| |			 |			 |
+    |	 |		| |			 |			 022.4 Speed over the ground in knots
+    |	 |		| |			 |
+    |	 |		| |			 01131.000,E Longitude 11 deg 31.000' E
+    |	 |		| |
+    |	 |		| 4807.038,N Latitude 48 deg 07.038' N
+    |	 |		|
+    |	 |		A Status A=active or V=Void
+    |	 |
+    |	 123519 Fix taken at 12:35:19 UTC
+    |
+    RMC Recommended Minimum sentence C
 
 */
 void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
@@ -602,8 +618,8 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
         return;
     if(p2 == p1)
         return;
-    //	if(*p1 != 'A')
-    //		return;
+    if(*p1 != 'A')
+        return;
     p1 = p2 + 1;
 
     // Latitude
@@ -702,14 +718,40 @@ void NMEAParser::ProcessGPRMC(const char *buf, const unsigned int bufSize)
     auxBuf[p2 - p1] = '\0';
     p1 = p2 + 1;
     double magneticVariation = atof(auxBuf);
-    if((p2 = strchr(p1, '*')) == NULL)
-        return;
-    if(p2 - p1 > 3) //this was 1. Now 3 because we have an extra 'A'
-        return;
+
     if(*p1 == 'W')
         latitude = -latitude;
     else if(*p1 != 'E' && *p1 != '*')
         return;
+
+    //Mode
+
+    if((unsigned int)(p1 - buf) >=bufSize)
+        return;
+    if((p2 = strchr(p1, ',')) == NULL)
+        return;
+    strncpy(auxBuf, p1, p2 - p1);
+    p1 = p2 + 1;
+    char mode;
+    if(*p1 == 'A')
+        mode = 'A'; //Autonomous
+    else if(*p1 == 'D')
+        mode = 'D'; //Differential
+    else if(*p1 == 'E')
+        mode = 'E'; //Estimated
+    else if(*p1 == 'N')
+        mode = 'N'; //Not Valid
+    else if(*p1 == 'S')
+        mode = 'S'; //Simulated
+    else
+        return;
+
+    //Checksum
+    if((p2 = strchr(p1, '*')) == NULL)
+        return;
+    if(p2 - p1 > 1)
+        return;
+
 
     // Set the values of m_GPSInfo
     myGPSInfo.setLatitude(latitude);

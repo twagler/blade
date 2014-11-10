@@ -16,8 +16,9 @@ using namespace std;
 #include "libGPIO/libgpio.h"
 #include "NMEAParser/NMEAParser.h"
 
-#define d2r (M_PI / 180.0)
+#define DEBUG
 
+#define d2r (M_PI / 180.0)
 #define NUM_ULTRAS 5
 #define MIN_SPEED -126
 #define MAX_SPEED  126

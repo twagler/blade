@@ -4,10 +4,9 @@
 
 #define SERVER "tegra-ubuntu"
 #define PORT "1334"
-#define MAXDATASIZE 1023
+#define MAXDATASIZE 32768
 
 #include "gps.h"
-#include "serialport.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

@@ -23,9 +23,6 @@ void WaypointNavigation() {
     int difference=0;
     int derivative=0;
 
-    float DXpath;
-    float DYpath;
-
     bool first = true;
 
     GPS way, way2;
@@ -43,13 +40,6 @@ void WaypointNavigation() {
                 LONwaypoint[wayindex+1] << "\r\n";
         //DEBUG
 
-        /*OLD METHOD
-        DXpath = LATwaypoint[wayindex+1] - gps.getLatitude();  //not correct
-        DYpath = LONwaypoint[wayindex+1] - gps.getLongitude(); //not correct
-
-        distance = sqrt((DXpath*DXpath) + (DYpath*DYpath));    //earth is flat? (close enough)
-        */
-
         way.setLatitude(LATwaypoint[wayindex+1]);
         way.setLongitude(LONwaypoint[wayindex+1]);
 
@@ -62,8 +52,11 @@ void WaypointNavigation() {
             CalcWaypoint();
             wayindex++;
 
-            //way.setLatitude(LATwaypoint[wayindex]);
-            //way.setLongitude(LONwaypoint[wayindex]);
+            //these can be gotten rid of afer we find a better way to
+            //calculate path error
+            DeltaXgoal = LATwaypoint[wayindex+1] - LATwaypoint[wayindex];
+            DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
+
             way2.setLatitude(LATwaypoint[wayindex+1]);
             way2.setLongitude(LONwaypoint[wayindex+1]);
 
