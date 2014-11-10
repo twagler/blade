@@ -33,6 +33,7 @@ using namespace std;
 
 #define GPS_SERVER "tegra-ubuntu"
 #define GPS_PORT "1334"
+#define CONTROL_PORT "13333"   // port we're listening on
 #define MAXDATASIZE 32768
 
 void UpdateUltraData(void);
@@ -46,6 +47,8 @@ void WriteGPS(void);
 void JoystickTest(void);
 void ControlSwitcher(void);
 void InitTCPServer(void);
+int ControlServerInit(const char*);
+void *get_in_addr(struct sockaddr *sa);
 void InitUltraServer(void);
 void InitGPSThread(void);
 void openSerial(void);

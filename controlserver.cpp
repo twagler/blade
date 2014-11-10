@@ -5,76 +5,10 @@
 #include "controlserver.h"
 #include "mower.h"
 
-#define CONTROL_PORT "13333"   // port we're listening on
 
 ControlServer::ControlServer()
 {
 
-}
-
-// get sockaddr, IPv4 or IPv6:
-void *get_in_addr2(struct sockaddr *sa)
-{
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
-int ControlServer::initialize()
-{
-    int yes=1;        // for setsockopt() SO_REUSEADDR, below
-    int rv;
-    int listener;     // listening socket descriptor
-    struct addrinfo hints, *ai, *p;
-
-    // get us a socket and bind it
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE;
-    if ((rv = getaddrinfo(NULL, CONTROL_PORT, &hints, &ai)) != 0)
-    {
-        fprintf(stderr, "selectserver: %s\n", gai_strerror(rv));
-        exit(1);
-    }
-
-    for(p = ai; p != NULL; p = p->ai_next)
-    {
-        listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-        if (listener < 0)
-        {
-            continue;
-        }
-
-        // lose the pesky "address already in use" error message
-        setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
-
-        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0)
-        {
-            close(listener);
-            continue;
-        }
-        break;
-    }
-
-    // if we got here, it means we didn't get bound
-    if (p == NULL)
-    {
-        fprintf(stderr, "selectserver: failed to bind\n");
-        exit(2);
-    }
-
-    freeaddrinfo(ai); // all done with this
-
-    // listen
-    if (listen(listener, 10) == -1)
-    {
-        perror("listen");
-        exit(3);
-    }
-    return listener;
 }
 
 void ControlServer::run(void)
@@ -97,7 +31,7 @@ void ControlServer::run(void)
     FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
 
-    listener = initialize();
+    listener = ControlServerInit(CONTROL_PORT);
 
     // add the listener to the master set
     FD_SET(listener, &master);
@@ -136,7 +70,7 @@ void ControlServer::run(void)
 
                         printf("selectserver: new connection from %s on socket %d\n",
                                inet_ntop(remoteaddr.ss_family,
-                                         get_in_addr2((struct sockaddr*)&remoteaddr),
+                                         get_in_addr((struct sockaddr*)&remoteaddr),
                                          remoteIP, INET6_ADDRSTRLEN), newfd);
                     }
                 }

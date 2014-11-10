@@ -49,7 +49,7 @@ void ControlSwitcher()
 
         //Continue to operate in autonomous mode until something kicks us out of auto
         while(Autonomous)
-            this_thread::sleep_for(chrono::milliseconds(500));
+            this_thread::sleep_for(chrono::milliseconds(10));
 
         //join the thread when booted out of auto
         if(Navigate.joinable())
