@@ -2,9 +2,9 @@ using namespace std;
 
 #include "mower.h"
 
-#define Kp        0.100
-#define Kd        0.005
-#define Ki        0.001
+#define Kp        0.010
+#define Ki        0.0001
+#define Kd        0.0005
 #define ARRIVED   0.00005
 
 void WaypointNavigation() {
@@ -12,8 +12,6 @@ void WaypointNavigation() {
     cout << "Starting Waypoint Navigation thread...\r\n";
 
     float distance   = 0;
-    float DeltaXgoal = 0;
-    float DeltaYgoal = 0;
     float PathLength = 0;
     float lasterror  = 0;
     float integral   = 0;
@@ -32,19 +30,16 @@ void WaypointNavigation() {
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
-        way.setLatitude(LATwaypoint[wayindex+1]);
-        way.setLongitude(LONwaypoint[wayindex+1]);
-        distance = gps_distance(way, gps);
+        way.setLatitude(LATwaypoint[wayindex]);
+        way.setLongitude(LONwaypoint[wayindex]);
+        way2.setLatitude(LATwaypoint[wayindex+1]);
+        way2.setLongitude(LONwaypoint[wayindex+1]);
+        distance = gps_distance(way2, gps);
 
         if (distance < ARRIVED || first)  //arrived @ waypoint
         {
             CalcWaypoint();
             wayindex++;
-
-            //these can be gotten rid of afer we find a better way to
-            //calculate path error
-            DeltaXgoal = LATwaypoint[wayindex+1] - LATwaypoint[wayindex];
-            DeltaYgoal = LONwaypoint[wayindex+1] - LONwaypoint[wayindex];
 
             way.setLatitude(LATwaypoint[wayindex+1]);
             way.setLongitude(LONwaypoint[wayindex+1]);
@@ -58,8 +53,23 @@ void WaypointNavigation() {
         else //Travel toward waypoint
         {
 
-            difference = ((DeltaXgoal * (LATwaypoint[wayindex] - gps.getLongitude()))
-                          -(DeltaYgoal * (LONwaypoint[wayindex] - gps.getLatitude()))) / PathLength;
+            //calculate difference using Heron's Formula
+            //combined with a little algebra
+
+            //A = (1/2)b*h
+            //A = sqrt(s(s-a)(s-b)(s-c)) where s is semiperimeter
+
+            //so
+
+            float sideA, sideB, sideC;
+
+            sideA = gps_distance(way, way2);
+            sideB = gps_distance(gps, way);
+            sideC = gps_distance(gps, way2);
+
+            difference = (sqrt((4*sideA*sideA*sideB*sideB)-
+                              pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))
+                          /(2*sideA);
 
             derivative = difference - lasterror;
             integral = integral + (difference+lasterror)/2;
