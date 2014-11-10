@@ -105,8 +105,6 @@ void ReadGPS_NMEA()
             gps_lock.unlock();
             cv_gps.notify_one();
         }
-
-
     }
     close(sockfd);
     return;

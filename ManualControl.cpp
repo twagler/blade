@@ -16,11 +16,11 @@ void JoystickTest()
     {
         printf("Joystick open failed...\r\n"); //print error
         exit(1);    //exit program if joystick is not found
-                    //this is probably a bad idea
+        //this is probably a bad idea
     }
 
     motors.setMotorEnable(true);    //enable the motors
-                                    //shouldn't do this here
+    //shouldn't do this here
 
     char leftspeed, rightspeed;     //speed values for motors L&R
     JoystickEvent event;            //linux event object

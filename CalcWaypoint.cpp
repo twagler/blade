@@ -21,11 +21,11 @@ void CalcWaypoint(){
 void CalcWaypoint(LawnMap &map)
 {
     //if moving up/down
-            //LATwaypoint[incwaypoint(2)]=LATwaypoint[incwaypoint(1)]+ROBOT_WIDTH;
-            //LONwaypoint[incwaypoint(2)]=LONwaypoint[incwaypoint(1)];
+    //LATwaypoint[incwaypoint(2)]=LATwaypoint[incwaypoint(1)]+ROBOT_WIDTH;
+    //LONwaypoint[incwaypoint(2)]=LONwaypoint[incwaypoint(1)];
     //if moving left right
-            //LATwaypoint[incwaypoint(2)]=LATwaypoint[incwaypoint(1)];
-            //LONwaypoint[incwaypoint(2)]=LONwaypoint[decwaypoint(1)];
+    //LATwaypoint[incwaypoint(2)]=LATwaypoint[incwaypoint(1)];
+    //LONwaypoint[incwaypoint(2)]=LONwaypoint[decwaypoint(1)];
 
 
 
@@ -37,7 +37,7 @@ void CalcWaypoint(LawnMap &map)
 
     //if(! map.boundaryCheck() ){
     //    throw std::exception(); //Mower out of bounds, Correct course
-   // }
+    // }
 
     /* Run function to identify Boustrophedon sections, assuming no obsticles.
         take into account known objects from previous mowings.
@@ -50,13 +50,13 @@ void CalcWaypoint(LawnMap &map)
     Check if toGPS is the same as currentGPS. */
 
     //if( map.atWaypoint()) {
-        //we have finished our run, should either be finished with boustrophedon or turning around
-        //can we turn?
-        //if( map.canTurn()){
-            //turn chickever way we need to.
-            //map.nextRow();
+    //we have finished our run, should either be finished with boustrophedon or turning around
+    //can we turn?
+    //if( map.canTurn()){
+    //turn chickever way we need to.
+    //map.nextRow();
 
-        //}
+    //}
     //}
 
     /*If on a Boustrophedon area
