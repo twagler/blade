@@ -206,7 +206,6 @@ void SetSpeeds()
         //     << (int)rightspeed << ")\r\n";
     }
 }
-
 float gps_distance(GPS one, GPS two)
 {
     double dlong = (two.getLongitude() - one.getLongitude())*d2r;

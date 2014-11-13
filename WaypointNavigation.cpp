@@ -38,7 +38,7 @@ void WaypointNavigation() {
 
         if (distance < ARRIVED || first)  //arrived @ waypoint
         {
-            CalcWaypoint();
+            //CalcWaypoint();
             wayindex++;
 
             way.setLatitude(LATwaypoint[wayindex+1]);

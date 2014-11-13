@@ -1,23 +1,28 @@
+using namespace std;
 #include <vector>
 #include <time.h>
+#include "gps.h"
+#include "mower.h"
 #ifndef LAWNMAP_H
 #define LAWNMAP_H
 
-struct COORDINATE {
-    bool mowed;
+//close enough ~2cm
+#define CLOSE_ENOUGH 2
+
+struct LawnCoordinate
+{
+    double Latitude;
+    double Longitude;
     bool object;
     time_t mowedTime;
     bool boundary;
 };
-struct BOUSTROPHEDON {
-    int xNE;
-    int yNE;
-    int xNW;
-    int yNW;
-    int xSE;
-    int ySE;
-    int xSW;
-    int ySW;
+struct BOUSTROPHEDON
+{
+    LawnCoordinate NE;
+    LawnCoordinate NW;
+    LawnCoordinate SE;
+    LawnCoordinate SW;
     int size;
 };
 
@@ -25,17 +30,21 @@ class LawnMap
 {
 public:
     LawnMap();
-    LawnMap(std::vector<double[2]>);
-    int boundaryCheck(double[2]);
-    int atWaypoint();
+    LawnMap(vector<LawnCoordinate>);
+    int boundaryCheck(LawnCoordinate);
+    int atWaypoint(LawnCoordinate);
+    LawnCoordinate atCoordinate(GPS);
+    int mowedLawnCoordinate(LawnCoordinate);
     int canTurn();
     void nextRow();
+    //bool lineGood(LawnCoordinate, LawnCoordinate);
     bool lineGood(int, int, int, int);
 
-    std::vector<int[4][2]> boustrophedons; //vector containing known boustrophedons.  Each boustrophendon has 4 corners, each with an x and y component
-    std::vector< std::vector<COORDINATE> > map;
-    int xSize;
-    int ySize;
+    vector<LawnCoordinate[4]> boustrophedons; //vector containing known boustrophedons.
+    //Each boustrophendon has 4 corners, each with an lat and lon component
+    vector< vector<LawnCoordinate> > map;
+    int LatSize;
+    int LonSize;
     void setCurrentGPS(double x, double y);
     void setFromGPS(double x, double y);
     void setToGPS(double x, double y);
@@ -44,13 +53,9 @@ public:
     double *getFromGPS();
 
 private:
-    double currentGPSx;
-    double currentGPSy;
-    double fromGPSx;
-    double fromGPSy;
-    double toGPSx;
-    double toGPSy;
-
+    LawnCoordinate currentLocation;
+    LawnCoordinate fromLocation;
+    LawnCoordinate toLocation;
 };
 
 #endif // LAWNMAP_H

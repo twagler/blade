@@ -6,7 +6,6 @@ CONFIG += c++11
 LIBS += -pthread
 
 SOURCES += main.cpp \
-    CalcWaypoint.cpp \
     gps.cpp \
     mower.cpp \
     Print.cpp \
