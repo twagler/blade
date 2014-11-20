@@ -58,6 +58,9 @@ LawnMap::LawnMap(vector<LawnCoordinate> vList){
     int LatSize = (highLat - lowLat) * precision;
     int LonSize = (highLon - lowLon) * precision;
 
+    //so we have a big rectangle made up of the highest/lowest points.  so even if our mowing area isn't a rectangle, our map is.
+    //this makes it easier for me to visualize -Alan
+
     //the map should populate the lat,lon coordinates of that Lawncoordinate
     //upon creation. This needs that logic.
     //Should it be a truncated GPS reading?
@@ -66,14 +69,16 @@ LawnMap::LawnMap(vector<LawnCoordinate> vList){
     //37.9516267 => 37.95
     //that way any reading between 37.945 and 37.96 get sent to 37.95
 
+    //i was trying to think of a fast way to do it, using a heap data structure or something similar.... -alan
+
     //this->map ( LonSize, vector<LawnCoordinate> (LatSize, LawnCoordinate()));
 
-    /*
     for(unsigned int i = 0; i < vList.size(); i++)
     {
         (this->map.at(vList.at(i)[0]).at(vList.at(i)[1])).boundary = true;
+        //this sets the mowing boundary flag on the (hopefully) appropriate points.
+        //we are assuming he vList contains only boundary points.  This might be a bad assumption.
     }
-*/
     //map should be generated
 }
 
@@ -97,6 +102,7 @@ int LawnMap::mowedLawnCoordinate(LawnCoordinate currentLocation)
 
     //INSERT LOOP OF ALL LAWNCOORDINATES HERE
     //IS THERE A BETTER WAY TO DO THIS?  GOD I HOPE SO...
+    //i have no idea how long this will take to run
     //if(gps_distance(currentLocation.LatLon, templocfromloop) <= ARRIVED)
         //currentLocation.mowedTime = time_t.now();
 return 0;
