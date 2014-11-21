@@ -54,9 +54,10 @@ LawnMap::LawnMap(vector<LawnCoordinate> vList){
     }
 
     //we now have the boundaries of our map and can generate it
+    //to change the resolution of the map, we will need to modify the precision
 
-    int LatSize = (highLat - lowLat) * precision;
-    int LonSize = (highLon - lowLon) * precision;
+    int LatSize = floor((highLat - lowLat) * precision);
+    int LonSize = floor((highLon - lowLon) * precision);
 
     //so we have a big rectangle made up of the highest/lowest points.  so even if our mowing area isn't a rectangle, our map is.
     //this makes it easier for me to visualize -Alan
@@ -71,11 +72,17 @@ LawnMap::LawnMap(vector<LawnCoordinate> vList){
 
     //i was trying to think of a fast way to do it, using a heap data structure or something similar.... -alan
 
+    this->map.resize(LonSize, vector<LawnCoordiante>(LatSize));
+
+
     //this->map ( LonSize, vector<LawnCoordinate> (LatSize, LawnCoordinate()));
 
     for(unsigned int i = 0; i < vList.size(); i++)
     {
-        (this->map.at(vList.at(i)[0]).at(vList.at(i)[1])).boundary = true;
+        double lat = vList.at(i).Latitude;
+        double lon = vList.at(i).Longitude;
+
+        this->map.at(lat*precision).at(lon*precision).boundary = true;
         //this sets the mowing boundary flag on the (hopefully) appropriate points.
         //we are assuming he vList contains only boundary points.  This might be a bad assumption.
     }
