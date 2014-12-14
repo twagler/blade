@@ -98,45 +98,30 @@ void ControlServer::run(void)
 
 void ControlServer::ParseCommand(char buf[])
 {
-    string command, value;
+    int command, value;
     stringstream ss(stringstream::in | stringstream::out);
     ss.str("");
     ss.str(string(buf));
     ss >> command >> value;
 
-    //command should probably be an enum
-    //then we could switch() it
-    if(command=="mode")
+    switch(command)
     {
-        if(value=="autonomous")
+    case MODE:
+        printf("Changing MODE to: ");
+        if(value==MODE_AUTO)
         {
             Autonomous=1;
-            printf("Changing to AUTO\r\n");
+            printf("AUTO\r\n");
         }
-        else
+        else //anything else defaults to manual control
         {
             Autonomous=0;
-            printf("Changing to MANUAL\r\n");
+            printf("MANUAL\r\n");
         }
-    }
-    else if(command=="halt")
-    {
-        //stop blades, motors, etc...
-        motors.setMotorEnable(false);
-    }
-
-    else if (command=="Report_Location")
-    {
-
-    }
-
-    else if (command =="Report_Battery_Status")
-    {
-
-    }
-
-    else
+        break;
+    default:
         printf("Bad input.  What is: %s?", buf);
-
+        break;
+    }
 }
 
