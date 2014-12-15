@@ -72,7 +72,7 @@ LawnMap::LawnMap(vector<LawnCoordinate> vList){
 
     //i was trying to think of a fast way to do it, using a heap data structure or something similar.... -alan
 
-    this->map.resize(LonSize, vector<LawnCoordiante>(LatSize));
+    this->map.resize(LonSize, vector<LawnCoordinate>(LatSize));
 
 
     //this->map ( LonSize, vector<LawnCoordinate> (LatSize, LawnCoordinate()));

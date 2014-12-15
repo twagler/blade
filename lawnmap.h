@@ -11,11 +11,11 @@ using namespace std;
 
 struct LawnCoordinate
 {
-    double Latitude;
-    double Longitude;
-    bool object;
-    time_t mowedTime;
-    bool boundary;
+   double Latitude;
+   double Longitude;
+   bool object;
+   time_t mowedTime;
+   bool boundary;
 };
 struct BOUSTROPHEDON
 {
