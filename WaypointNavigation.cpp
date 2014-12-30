@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "mower.h"
 
 #define Kp        0.010

@@ -1,4 +1,3 @@
-using namespace std;
 #include "quadtree.h"
 #include <cstddef>
 
@@ -45,10 +44,10 @@ void QuadTree::build(vector<vector<LawnCoordinate>> vList)
         while (y+2< vList.at(0).size())  //while the current y value +2 is less than the # of y coordinate entires
         {
 
-        //TODO.  This will involve calling the QuadTree::grow function
+            //TODO.  This will involve calling the QuadTree::grow function
         }
     }
- }
+}
 
 vector<vector<QuadTree>> QuadTree::grow(vector<vector<QuadTree>> qList)
 {

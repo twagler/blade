@@ -1,4 +1,3 @@
-using namespace std;
 #include <vector>
 #include <time.h>
 #include "gps.h"

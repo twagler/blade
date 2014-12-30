@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "mower.h"
 
 //use an array of waypoints for now.  A more robust mapping mechanism will be required

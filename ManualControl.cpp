@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "mower.h"
 
 /* This thread opens the /dev/js* device and continuously
