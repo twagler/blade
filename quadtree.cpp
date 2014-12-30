@@ -1,5 +1,4 @@
 #include "quadtree.h"
-#include "lawnmap.h"
 #include <cstddef>
 
 QuadTree::QuadTree()
@@ -34,8 +33,8 @@ QuadTree::QuadTree()
  */
 void QuadTree::build(std::vector<std::vector<LawnCoordinate>> vList) {
     //need to assume that vList was created correctly
-    int x = 0;
-    int y = 0;
+    unsigned int x = 0;
+    unsigned int y = 0;
 
     //we build out tree from the bottom up, one quad at a time.  So we look at our vList in 2x2 chunks.
     //x starts at 0 but size starts at 1, plus need to check ahead one since we're grabbing 2 at a time.
@@ -63,12 +62,12 @@ std::vector<std::vector<QuadTree>> QuadTree::grow(std::vector<std::vector<QuadTr
     //make a new 2d QuadTree vector
     //std::vector< std::vector<QuadTree>> newQList( newQSizeX, std::vector<QuadTree>(newQSizeY,0));   //this constructor isn't working... bah.  FIX ME
     std::vector< std::vector<QuadTree>> newQList( newQSizeX, std::vector<QuadTree>());
-    for(int n=0;n<newQList.size();n++){
+    for(unsigned int n=0;n<newQList.size();n++){
         newQList.at(n).resize(newQSizeY);
     }
 
-    int i=0;
-    int j=0;
+    unsigned int i=0;
+    unsigned int j=0;
 
     for(i = 0; i+2<qList.size(); i=+2){
         for(j = 0; j+2<qList.at(0).size(); j=+2){
@@ -86,7 +85,7 @@ std::vector<std::vector<QuadTree>> QuadTree::grow(std::vector<std::vector<QuadTr
     }
     if(j+1<qList.at(0).size() && j+2>=qList.at(0).size()){
         //we have column left at right
-        for(int j = 0; j+2<qList.at(0).size(); j=+2){
+        for(unsigned int j = 0; j+2<qList.at(0).size(); j=+2){
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NW = &(qList.at(i)).at(j);
             (newQList.at(ceil(i/2))).at(ceil(j/2)).SW = &(qList.at(i)).at(j+1);
 

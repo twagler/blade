@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     libGPIO/libgpio.cpp \
     NMEAParser/NMEAParser.cpp \
     serialport.cpp \
-    lawnmap.cpp
+    lawnmap.cpp \
+    quadtree.cpp
 
 HEADERS += \
     gps.h \
@@ -31,7 +32,8 @@ HEADERS += \
     libGPIO/libgpio.h \
     NMEAParser/NMEAParser.h \
     serialport.h \
-    lawnmap.h
+    lawnmap.h \
+    quadtree.h
 
 OTHER_FILES += \
     README.md \
