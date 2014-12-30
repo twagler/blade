@@ -1,3 +1,4 @@
+using namespace std;
 #include "quadtree.h"
 #include <cstddef>
 
@@ -31,7 +32,7 @@ QuadTree::QuadTree()
 /*
  * builds the quadtree
  */
-void QuadTree::build(std::vector<std::vector<LawnCoordinate>> vList) {
+void QuadTree::build(vector<vector<LawnCoordinate>> vList) {
     //need to assume that vList was created correctly
     unsigned int x = 0;
     unsigned int y = 0;
@@ -47,7 +48,7 @@ void QuadTree::build(std::vector<std::vector<LawnCoordinate>> vList) {
     }
  }
 
-std::vector<std::vector<QuadTree>> QuadTree::grow(std::vector<std::vector<QuadTree>> qList) {
+vector<vector<QuadTree>> QuadTree::grow(vector<vector<QuadTree>> qList) {
     //grows a 2dvector array of QuadTrees into a more QuadTree'd version.
     //Called recursively.  Will eventually end with a qList of lenth 1, with a fully formed QuadTree
 
@@ -60,8 +61,8 @@ std::vector<std::vector<QuadTree>> QuadTree::grow(std::vector<std::vector<QuadTr
     int newQSizeY = ceil(qList.at(0).size()/2);
 
     //make a new 2d QuadTree vector
-    //std::vector< std::vector<QuadTree>> newQList( newQSizeX, std::vector<QuadTree>(newQSizeY,0));   //this constructor isn't working... bah.  FIX ME
-    std::vector< std::vector<QuadTree>> newQList( newQSizeX, std::vector<QuadTree>());
+    //vector< vector<QuadTree>> newQList( newQSizeX, vector<QuadTree>(newQSizeY,0));   //this constructor isn't working... bah.  FIX ME
+    vector< vector<QuadTree>> newQList( newQSizeX, vector<QuadTree>());
     for(unsigned int n=0;n<newQList.size();n++){
         newQList.at(n).resize(newQSizeY);
     }
