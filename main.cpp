@@ -3,7 +3,7 @@
 int main() {
 
     //thread RangeSensors(InitUltraServer);
-    //thread ReceiveGPS(ReadGPS_NMEA);
+    thread ReceiveGPS(ReadGPS_NMEA);
     thread AdjustSpeed(SetSpeeds);
     thread ControlSupervisor(ControlSwitcher);
     thread PS3(JoystickTest);
