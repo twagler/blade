@@ -32,7 +32,7 @@ using namespace std;
 #define MANUAL      1
 
 #define GPS_SERVER "greenwellsoftware.com"
-#define GPS_PORT "50003"
+#define GPS_PORT "50001"
 #define CONTROL_PORT "13333"   // port we're listening on
 #define MAXDATASIZE 32768
 

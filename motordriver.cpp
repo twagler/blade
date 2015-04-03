@@ -10,6 +10,7 @@ MotorDriver::MotorDriver()
     myLeftSpeed = 0;
     myRightSpeed = 0;
     myEnable = 0;
+    myPort = SerialPort("/dev/ttyO1",9600);
 
 }
 void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
@@ -65,10 +66,11 @@ void MotorDriver::sendSpeeds()
     buffer[7] = Packet_Right.data;
     buffer[8] = Packet_Right.checksum;
 
-    //my_comm_port.write(buffer, sizeof buffer);
+    int n = 0;
+    n = write(myPort.serial_fd,buffer, sizeof buffer);
 
-    //if(my_comm_port.serial_write(buffer) != 8)
-    //    printf("motor driver serial write error\r\n");
+    if(n != 8)
+        printf("motor driver serial write error\r\n");
 
 }
 

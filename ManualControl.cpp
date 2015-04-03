@@ -20,7 +20,7 @@ void JoystickTest()
     motors.setMotorEnable(true);    //enable the motors
     //shouldn't do this here
 
-    char leftspeed, rightspeed;     //speed values for motors L&R
+    signed char leftspeed, rightspeed;     //speed values for motors L&R
     JoystickEvent event;            //linux event object
     while (true)    //loop loop loop...
     {

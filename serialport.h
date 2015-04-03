@@ -12,7 +12,8 @@
 class SerialPort
 {
 public:
-    SerialPort(const char*, int);
+    SerialPort();
+    SerialPort(const char*,int);
     int serial_fd;
 };
 

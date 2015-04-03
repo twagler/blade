@@ -1,6 +1,8 @@
 #ifndef MOTORDRIVER_H
 #define MOTORDRIVER_H
 
+#include "serialport.h"
+
 #define SABERTOOTH_ADDRESS 130
 #define PACKET_LENGTH 8
 
@@ -34,6 +36,7 @@ private:
     char myLeftSpeed;
     char myRightSpeed;
     bool myEnable;
+    SerialPort myPort;
 
 };
 
