@@ -33,8 +33,8 @@ public:
     };
 
 private:
-    char myLeftSpeed;
-    char myRightSpeed;
+    signed char myLeftSpeed;
+    signed char myRightSpeed;
     bool myEnable;
     SerialPort myPort;
 

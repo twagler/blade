@@ -167,7 +167,7 @@ void SetSpeeds()
 {
     cout << "Starting speed setting thread...\r\n";
 
-    char leftspeed, rightspeed;
+    signed char leftspeed, rightspeed;
 
     while(true)
     {
