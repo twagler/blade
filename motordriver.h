@@ -16,13 +16,13 @@ class MotorDriver
 {
 public:
     MotorDriver();
-    void setSpeeds(char, char);
+    void setSpeeds(signed char, signed char);
     void sendSpeeds();
     void setMotorEnable(bool);
-    char getLeftSpeed();
-    char getRightSpeed();
+    signed char getLeftSpeed();
+    signed char getRightSpeed();
     bool getEnable();
-    void setBaudRate(int, char);
+    void setBaudRate(int, unsigned char);
 
     struct SabertoothPacket
     {
