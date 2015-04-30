@@ -1,7 +1,7 @@
 #include "mower.h"
 
 //use an array of waypoints for now.  A more robust mapping mechanism will be required
-double LATwaypoint[] = {0,   0,  38.637520810,  38.64,  38.637520810,  38.637520810,  38.637520810,  38.637520810};
+double LATwaypoint[] = {0,   0,  38.64,  38.637520810,  38.637520810,  38.637520810,  38.637520810,  38.637520810};
 double LONwaypoint[] = {0, 0, -86.921577088, -86.921577088, -86.921577088, -86.921577088, -86.921577088, -86.921577088};
 
 //vector<GPS> waypoints;
