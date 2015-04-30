@@ -32,6 +32,8 @@ void WaypointNavigation() {
         //set first waypoint to where we are
         LATwaypoint[0] = gps.getLatitude();
         LONwaypoint[0] = gps.getLongitude();
+        LATwaypoint[1] = gps.getLatitude();
+        LONwaypoint[1] = gps.getLongitude();
 
         way.setLatitude(LATwaypoint[wayindex]);
         way.setLongitude(LONwaypoint[wayindex]);
