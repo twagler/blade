@@ -1,7 +1,7 @@
 #include "mower.h"
 
-#define Kp        0.010
-#define Ki        0.0001
+#define Kp        0.1000
+#define Ki        0.0000
 #define Kd        0.0005
 #define ARRIVED   0.00005
 
