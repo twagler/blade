@@ -7,6 +7,11 @@
 
 void WaypointNavigation() {
 
+    //exp
+    float deltaLAT, deltaLON, deltaDIST;
+
+    //exp
+
     cout << "Starting Waypoint Navigation thread...\r\n";
 
     float distance   = 0;
@@ -23,17 +28,21 @@ void WaypointNavigation() {
 
     GPS way, way2;
 
+    unique_lock<mutex> lk_gps(gps_lock);
+    cv_gps.wait(lk_gps);
+    //set first waypoint to where we are
+    LATwaypoint[0] = gps.getLatitude();
+    LONwaypoint[0] = gps.getLongitude();
+    LATwaypoint[1] = gps.getLatitude();
+    LONwaypoint[1] = gps.getLongitude();
+
+    lk_gps.unlock();
+
     while(true)
     {
 
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
-
-        //set first waypoint to where we are
-        LATwaypoint[0] = gps.getLatitude();
-        LONwaypoint[0] = gps.getLongitude();
-        LATwaypoint[1] = gps.getLatitude();
-        LONwaypoint[1] = gps.getLongitude();
 
         way.setLatitude(LATwaypoint[wayindex]);
         way.setLongitude(LONwaypoint[wayindex]);
@@ -53,6 +62,13 @@ void WaypointNavigation() {
 
             PathLength = gps_distance(way,way2);
             first = false;
+
+            //experiment
+            deltaLAT = way.getLatitude() - way2.getLatitude();
+            deltaLON = way.getLongitude() - way2.getLongitude();
+            deltaDIST = sqrt(deltaLAT*deltaLAT+deltaLON*deltaLON);
+            //exp
+
         }
 
         else //Travel toward waypoint
@@ -72,13 +88,17 @@ void WaypointNavigation() {
             sideB = gps_distance(gps, way);
             sideC = gps_distance(gps, way2);
 
-            difference = (sqrt((4*sideA*sideA*sideB*sideB)-
-                               pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))
-                    /(2*sideA);
+            difference = (sqrt((4*sideA*sideA*sideB*sideB)-pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))/(2*sideA);
+
+            //exp
+            difference = (deltaLON*(way.getLatitude()-gps.getLatitude()) - deltaLAT*(way.getLongitude()-gps.getLongitude())/deltaDIST);
+            //exp
 
             derivative = difference - lasterror;
             integral = integral + (difference+lasterror)/2;
             lasterror = difference;
+
+
 
             drive_lock.lock();
 
