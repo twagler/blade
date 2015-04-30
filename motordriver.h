@@ -3,7 +3,7 @@
 
 #include "serialport.h"
 
-#define SABERTOOTH_ADDRESS 130
+#define SABERTOOTH_ADDRESS 128
 #define PACKET_LENGTH 8
 
 #define LEFT_MOTOR_FORWARD      0

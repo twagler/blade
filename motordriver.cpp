@@ -25,8 +25,8 @@ void MotorDriver::sendSpeeds()
     SabertoothPacket Packet_Left;
     SabertoothPacket Packet_Right;
 
-    Packet_Left.address = 130;
-    Packet_Right.address = 130;
+    Packet_Left.address = SABERTOOTH_ADDRESS;
+    Packet_Right.address = SABERTOOTH_ADDRESS;
 
     //send leftspeed
     if(myLeftSpeed >=0)  //drive forward

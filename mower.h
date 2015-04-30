@@ -25,8 +25,8 @@ using namespace std;
 
 #define d2r (M_PI / 180.0)
 #define NUM_ULTRAS 5
-#define MIN_SPEED -126
-#define MAX_SPEED  126
+#define MIN_SPEED -5
+#define MAX_SPEED  55
 
 #define AUTONOMOUS  0
 #define MANUAL      1

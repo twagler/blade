@@ -13,10 +13,10 @@ GPS gps;
 mutex drive_lock;
 condition_variable cv_drive;
 
-bool Autonomous = true;
+bool Autonomous = false;
 bool first = true;
 char adjustment;
-char targetspeed = 55;
+char targetspeed = 25;
 
 MotorDriver motors;
 
@@ -195,11 +195,11 @@ void SetSpeeds()
             rightspeed = 0;
         }
 
-        if (motors.getEnable())
-        {
-            motors.setSpeeds(leftspeed, rightspeed);
-            motors.sendSpeeds();
-        }
+        else if (motors.getEnable())
+            {
+                motors.setSpeeds(leftspeed, rightspeed);
+                motors.sendSpeeds();
+            }
         //cout << "Motors: (" << (int)leftspeed << ","
         //     << (int)rightspeed << ")\r\n";
     }

@@ -23,8 +23,9 @@ void WaypointNavigation() {
 
     GPS way, way2;
 
-    while(Autonomous)
+    while(true)
     {
+
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
@@ -66,8 +67,8 @@ void WaypointNavigation() {
             sideC = gps_distance(gps, way2);
 
             difference = (sqrt((4*sideA*sideA*sideB*sideB)-
-                              pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))
-                          /(2*sideA);
+                               pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))
+                    /(2*sideA);
 
             derivative = difference - lasterror;
             integral = integral + (difference+lasterror)/2;
@@ -88,8 +89,8 @@ void WaypointNavigation() {
         printf("*********************************************************\r\n");
         printf("*           Blade Navigation Inputs/Outputs             *\r\n");
         printf("*-------------------------------------------------------*\r\n");
-        printf("*| Current waypoint:\t%.4i\t\t\t       |*\r\n",
-               wayindex);
+        printf("*| Current waypoint:\t%.4i\tMode: %d\t       |*\r\n",
+               wayindex,Autonomous);
         printf("*| Solution Quality:\t%i   Number of Satellites: %.2i   |*\r\n",
                gps.getSignalQuality(), gps.getSatelitesInUse());
         printf("*| Current Location:\t%f N,\t%f E   |*\r\n",
@@ -106,6 +107,8 @@ void WaypointNavigation() {
                difference, integral, derivative);
         printf("* Total Correction:\t%3d\t\t\t\t*\r\n", adjustment);
         //DEBUG
+
+        this_thread::sleep_for(chrono::milliseconds(500));
     }
     return;
 }

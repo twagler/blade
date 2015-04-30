@@ -96,8 +96,8 @@ void JoystickTest()
                 {
                     motors.setSpeeds(leftspeed, rightspeed);  //set the values
                     //print them
-                    printf("Speeds: (%i,%i)\r\n",
-                           (int)leftspeed, (int)rightspeed);
+                    //printf("Speeds: (%i,%i)\r\n",
+                    //       (int)leftspeed, (int)rightspeed);
                     motors.sendSpeeds();  //send the to the sabertooth
                 }
             }
