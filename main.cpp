@@ -6,7 +6,7 @@ int main() {
     thread ReceiveGPS(ReadGPS_NMEA);
     thread AdjustSpeed(SetSpeeds);
     //thread ControlSupervisor(ControlSwitcher);
-    //thread PS3(JoystickTest);
+    thread PS3(JoystickTest);
     thread NetworkControl(InitTCPServer);
     thread Navigate(WaypointNavigation);
 
