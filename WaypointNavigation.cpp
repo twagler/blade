@@ -29,6 +29,10 @@ void WaypointNavigation() {
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
+        //set first waypoint to where we are
+        LATwaypoint[0] = gps.getLatitude();
+        LONwaypoint[0] = gps.getLongitude();
+
         way.setLatitude(LATwaypoint[wayindex]);
         way.setLongitude(LONwaypoint[wayindex]);
         way2.setLatitude(LATwaypoint[wayindex+1]);
