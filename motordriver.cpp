@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "mower.h"
 #include "motordriver.h"
 
@@ -12,9 +10,10 @@ MotorDriver::MotorDriver()
     myLeftSpeed = 0;
     myRightSpeed = 0;
     myEnable = 0;
+    myPort = SerialPort("/dev/ttyO1",9600);
 
 }
-void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
+void MotorDriver::setSpeeds(signed char leftspeed, signed char rightspeed)
 {
     myLeftSpeed = leftspeed;
     myRightSpeed = rightspeed;
@@ -22,7 +21,7 @@ void MotorDriver::setSpeeds(char leftspeed, char rightspeed)
 
 void MotorDriver::sendSpeeds()
 {
-    char buffer[PACKET_LENGTH];
+    unsigned char buffer[PACKET_LENGTH];
     SabertoothPacket Packet_Left;
     SabertoothPacket Packet_Right;
 
@@ -33,23 +32,23 @@ void MotorDriver::sendSpeeds()
     if(myLeftSpeed >=0)  //drive forward
     {
         Packet_Left.command = LEFT_MOTOR_FORWARD;
-        Packet_Left.data = myLeftSpeed;
+        Packet_Left.data = (unsigned char)myLeftSpeed;
     }
     else //drive backward
     {
         Packet_Left.command = LEFT_MOTOR_BACKWARD;
-        Packet_Left.data = abs(myLeftSpeed);
+        Packet_Left.data = (unsigned char)(abs(myLeftSpeed));
 
     }
     if(myRightSpeed >=0) //drive forward
     {
         Packet_Right.command = RIGHT_MOTOR_FORWARD;
-        Packet_Right.data = myRightSpeed;
+        Packet_Right.data = (unsigned char)myRightSpeed;
     }
     else //drive backward
     {
         Packet_Right.command = RIGHT_MOTOR_BACKWARD;
-        Packet_Right.data = abs(myRightSpeed);
+        Packet_Right.data = (unsigned char)(abs(myRightSpeed));
     }
 
     Packet_Left.checksum = (Packet_Left.address + Packet_Left.command
@@ -58,23 +57,24 @@ void MotorDriver::sendSpeeds()
     Packet_Right.checksum = (Packet_Right.address + Packet_Right.command
                              + Packet_Right.data) & 0b01111111;
 
-    buffer[1] = Packet_Left.address;
-    buffer[2] = Packet_Left.command;
-    buffer[3] = Packet_Left.data;
-    buffer[4] = Packet_Left.checksum;
-    buffer[5] = Packet_Right.address;
-    buffer[6] = Packet_Right.command;
-    buffer[7] = Packet_Right.data;
-    buffer[8] = Packet_Right.checksum;
+    buffer[0] = Packet_Left.address;
+    buffer[1] = Packet_Left.command;
+    buffer[2] = Packet_Left.data;
+    buffer[3] = Packet_Left.checksum;
+    buffer[4] = Packet_Right.address;
+    buffer[5] = Packet_Right.command;
+    buffer[6] = Packet_Right.data;
+    buffer[7] = Packet_Right.checksum;
 
-    //my_comm_port.write(buffer, sizeof buffer);
+    int n = 0;
+    n = write(myPort.serial_fd,buffer, sizeof buffer);
 
-    //if(my_comm_port.serial_write(buffer) != 8)
-    //    printf("motor driver serial write error\r\n");
+    if(n != 8)
+        printf("motor driver serial write error\r\n");
 
 }
 
-void MotorDriver::setBaudRate(int baud, char address)
+void MotorDriver::setBaudRate(int baud, unsigned char address)
 {
     SabertoothPacket BaudPacket;
 
@@ -91,12 +91,12 @@ void MotorDriver::setMotorEnable(bool status)
     this->myEnable = status;
 }
 
-char MotorDriver::getLeftSpeed()
+signed char MotorDriver::getLeftSpeed()
 {
     return myLeftSpeed;
 }
 
-char MotorDriver::getRightSpeed()
+signed char MotorDriver::getRightSpeed()
 {
     return myRightSpeed;
 }

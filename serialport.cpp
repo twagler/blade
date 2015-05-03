@@ -1,5 +1,9 @@
 #include "serialport.h"
 
+SerialPort::SerialPort()
+{
+
+}
 SerialPort::SerialPort(const char* name, int baud)
 {
     struct termios tio;

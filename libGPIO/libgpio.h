@@ -1,3 +1,4 @@
+using namespace std;
 #ifndef LIBGPIO_H
 #define LIBGPIO_H
 
@@ -14,8 +15,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fcntl.h>
-
-using namespace std;
 
 class GPIO
 {

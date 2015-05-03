@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "gps.h"
+#include "../gps.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>

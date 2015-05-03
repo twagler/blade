@@ -1,4 +1,3 @@
-using namespace std;
 #include "lawnmap.h"
 #include <ctime>
 

@@ -19,8 +19,8 @@ public:
     int boundary;
     int obstacle;
     QuadTree();
-    void build(std::vector<std::vector<LawnCoordinate>>);
-    std::vector<std::vector<QuadTree>> grow(std::vector<std::vector<QuadTree>>);
+    void build(vector<vector<LawnCoordinate>>);
+    vector<vector<QuadTree>> grow(vector<vector<QuadTree>>);
 };
 
 

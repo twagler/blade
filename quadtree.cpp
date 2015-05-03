@@ -1,5 +1,4 @@
 #include "quadtree.h"
-#include "lawnmap.h"
 #include <cstddef>
 
 QuadTree::QuadTree()
@@ -32,27 +31,31 @@ QuadTree::QuadTree()
 /*
  * builds the quadtree
  */
-void QuadTree::build(std::vector<std::vector<LawnCoordinate>> vList) {
+void QuadTree::build(vector<vector<LawnCoordinate>> vList)
+{
     //need to assume that vList was created correctly
-    int x = 0;
-    int y = 0;
+    unsigned int x = 0;
+    unsigned int y = 0;
 
     //we build out tree from the bottom up, one quad at a time.  So we look at our vList in 2x2 chunks.
     //x starts at 0 but size starts at 1, plus need to check ahead one since we're grabbing 2 at a time.
-    while(x+2<vList.size()){  //while the currext x value +2 is less than the # of x coordinate entries
+    while(x+2<vList.size())
+    {  //while the currext x value +2 is less than the # of x coordinate entries
         while (y+2< vList.at(0).size())  //while the current y value +2 is less than the # of y coordinate entires
         {
 
-        //TODO.  This will involve calling the QuadTree::grow function
+            //TODO.  This will involve calling the QuadTree::grow function
         }
     }
- }
+}
 
-std::vector<std::vector<QuadTree>> QuadTree::grow(std::vector<std::vector<QuadTree>> qList) {
+vector<vector<QuadTree>> QuadTree::grow(vector<vector<QuadTree>> qList)
+{
     //grows a 2dvector array of QuadTrees into a more QuadTree'd version.
     //Called recursively.  Will eventually end with a qList of lenth 1, with a fully formed QuadTree
 
-    if(qList.size()==1){
+    if(qList.size()==1)
+    {
         return qList;
     }
 
@@ -61,37 +64,44 @@ std::vector<std::vector<QuadTree>> QuadTree::grow(std::vector<std::vector<QuadTr
     int newQSizeY = ceil(qList.at(0).size()/2);
 
     //make a new 2d QuadTree vector
-    //std::vector< std::vector<QuadTree>> newQList( newQSizeX, std::vector<QuadTree>(newQSizeY,0));   //this constructor isn't working... bah.  FIX ME
-    std::vector< std::vector<QuadTree>> newQList( newQSizeX, std::vector<QuadTree>());
-    for(int n=0;n<newQList.size();n++){
+    //vector< vector<QuadTree>> newQList( newQSizeX, vector<QuadTree>(newQSizeY,0));   //this constructor isn't working... bah.  FIX ME
+    vector< vector<QuadTree>> newQList( newQSizeX, vector<QuadTree>());
+    for(unsigned int n=0;n<newQList.size();n++)
+    {
         newQList.at(n).resize(newQSizeY);
     }
 
-    int i=0;
-    int j=0;
+    unsigned int i=0;
+    unsigned int j=0;
 
-    for(i = 0; i+2<qList.size(); i=+2){
-        for(j = 0; j+2<qList.at(0).size(); j=+2){
+    for(i = 0; i+2<qList.size(); i=+2)
+    {
+        for(j = 0; j+2<qList.at(0).size(); j=+2)
+        {
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NW = &(qList.at(i)).at(j);
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NE = &(qList.at(i+1)).at(j);
             (newQList.at(ceil(i/2))).at(ceil(j/2)).SW = &(qList.at(i)).at(j+1);
             (newQList.at(ceil(i/2))).at(ceil(j/2)).SE = &(qList.at(i+1)).at(j+1);
 
         }
-        if(j+1<qList.at(0).size() && j+2>=qList.at(0).size()){
+        if(j+1<qList.at(0).size() && j+2>=qList.at(0).size())
+        {
             //we have one row left at bottom
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NW = &(qList.at(i)).at(j);
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NE = &(qList.at(i+1)).at(j);
         }
     }
-    if(j+1<qList.at(0).size() && j+2>=qList.at(0).size()){
+    if(j+1<qList.at(0).size() && j+2>=qList.at(0).size())
+    {
         //we have column left at right
-        for(int j = 0; j+2<qList.at(0).size(); j=+2){
+        for(unsigned int j = 0; j+2<qList.at(0).size(); j=+2)
+        {
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NW = &(qList.at(i)).at(j);
             (newQList.at(ceil(i/2))).at(ceil(j/2)).SW = &(qList.at(i)).at(j+1);
 
         }
-        if(j+1<qList.at(0).size() && j+2>=qList.at(0).size()){
+        if(j+1<qList.at(0).size() && j+2>=qList.at(0).size())
+        {
             //we have one item left at bottom
             (newQList.at(ceil(i/2))).at(ceil(j/2)).NW = &(qList.at(i)).at(j);
         }

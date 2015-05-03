@@ -1,10 +1,8 @@
-using namespace std;
-
 #include "mower.h"
 
 //use an array of waypoints for now.  A more robust mapping mechanism will be required
-double LATwaypoint[] = {38.637431,   38.638,  38.639,  37.971432,  37.971417,  37.971495,  37.971497,  37.971432};
-double LONwaypoint[] = {-86.921618, -86.921618, -86.921620, -87.529695, -87.529813, -87.529810, -87.529698, -87.529695};
+double LATwaypoint[] = {0,   0,  38.64,  38.637520810,  38.637520810,  38.637520810,  38.637520810,  38.637520810};
+double LONwaypoint[] = {0, 0, -86.921577088, -86.921577088, -86.921577088, -86.921577088, -86.921577088, -86.921577088};
 
 //vector<GPS> waypoints;
 
@@ -15,10 +13,10 @@ GPS gps;
 mutex drive_lock;
 condition_variable cv_drive;
 
-bool Autonomous = true;
+bool Autonomous = false;
 bool first = true;
 char adjustment;
-char targetspeed = 55;
+char targetspeed = 25;
 
 MotorDriver motors;
 
@@ -169,7 +167,7 @@ void SetSpeeds()
 {
     cout << "Starting speed setting thread...\r\n";
 
-    char leftspeed, rightspeed;
+    signed char leftspeed, rightspeed;
 
     while(true)
     {
@@ -197,11 +195,11 @@ void SetSpeeds()
             rightspeed = 0;
         }
 
-        if (motors.getEnable())
-        {
-            motors.setSpeeds(leftspeed, rightspeed);
-            motors.sendSpeeds();
-        }
+        else if (motors.getEnable())
+            {
+                motors.setSpeeds(leftspeed, rightspeed);
+                motors.sendSpeeds();
+            }
         //cout << "Motors: (" << (int)leftspeed << ","
         //     << (int)rightspeed << ")\r\n";
     }

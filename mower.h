@@ -25,14 +25,14 @@ using namespace std;
 
 #define d2r (M_PI / 180.0)
 #define NUM_ULTRAS 5
-#define MIN_SPEED -126
-#define MAX_SPEED  126
+#define MIN_SPEED -5
+#define MAX_SPEED  55
 
 #define AUTONOMOUS  0
 #define MANUAL      1
 
-#define GPS_SERVER "greenwellsoftware.com"
-#define GPS_PORT "50003"
+#define GPS_SERVER "192.168.1.108"
+#define GPS_PORT "50001"
 #define CONTROL_PORT "13333"   // port we're listening on
 #define MAXDATASIZE 32768
 

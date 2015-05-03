@@ -1,13 +1,16 @@
-using namespace std;
-
 #include "mower.h"
 
-#define Kp        0.010
-#define Ki        0.0001
+#define Kp        0.1000
+#define Ki        0.0000
 #define Kd        0.0005
 #define ARRIVED   0.00005
 
 void WaypointNavigation() {
+
+    //exp
+    float deltaLAT, deltaLON, deltaDIST;
+
+    //exp
 
     cout << "Starting Waypoint Navigation thread...\r\n";
 
@@ -25,8 +28,19 @@ void WaypointNavigation() {
 
     GPS way, way2;
 
-    while(Autonomous)
+    unique_lock<mutex> lk_gps(gps_lock);
+    cv_gps.wait(lk_gps);
+    //set first waypoint to where we are
+    LATwaypoint[0] = gps.getLatitude();
+    LONwaypoint[0] = gps.getLongitude();
+    LATwaypoint[1] = gps.getLatitude();
+    LONwaypoint[1] = gps.getLongitude();
+
+    lk_gps.unlock();
+
+    while(true)
     {
+
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
@@ -48,6 +62,13 @@ void WaypointNavigation() {
 
             PathLength = gps_distance(way,way2);
             first = false;
+
+            //experiment
+            deltaLAT = way.getLatitude() - way2.getLatitude();
+            deltaLON = way.getLongitude() - way2.getLongitude();
+            deltaDIST = sqrt(deltaLAT*deltaLAT+deltaLON*deltaLON);
+            //exp
+
         }
 
         else //Travel toward waypoint
@@ -67,13 +88,17 @@ void WaypointNavigation() {
             sideB = gps_distance(gps, way);
             sideC = gps_distance(gps, way2);
 
-            difference = (sqrt((4*sideA*sideA*sideB*sideB)-
-                              pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))
-                          /(2*sideA);
+            difference = (sqrt((4*sideA*sideA*sideB*sideB)-pow((sideA*sideA+sideB*sideB-sideC*sideC),2)))/(2*sideA);
+
+            //exp
+            difference = (deltaLON*(way.getLatitude()-gps.getLatitude()) - deltaLAT*(way.getLongitude()-gps.getLongitude())/deltaDIST);
+            //exp
 
             derivative = difference - lasterror;
             integral = integral + (difference+lasterror)/2;
             lasterror = difference;
+
+
 
             drive_lock.lock();
 
@@ -90,8 +115,8 @@ void WaypointNavigation() {
         printf("*********************************************************\r\n");
         printf("*           Blade Navigation Inputs/Outputs             *\r\n");
         printf("*-------------------------------------------------------*\r\n");
-        printf("*| Current waypoint:\t%.4i\t\t\t       |*\r\n",
-               wayindex);
+        printf("*| Current waypoint:\t%.4i\tMode: %d\t       |*\r\n",
+               wayindex,Autonomous);
         printf("*| Solution Quality:\t%i   Number of Satellites: %.2i   |*\r\n",
                gps.getSignalQuality(), gps.getSatelitesInUse());
         printf("*| Current Location:\t%f N,\t%f E   |*\r\n",
@@ -108,6 +133,8 @@ void WaypointNavigation() {
                difference, integral, derivative);
         printf("* Total Correction:\t%3d\t\t\t\t*\r\n", adjustment);
         //DEBUG
+
+        this_thread::sleep_for(chrono::milliseconds(500));
     }
     return;
 }

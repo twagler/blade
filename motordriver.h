@@ -1,7 +1,9 @@
 #ifndef MOTORDRIVER_H
 #define MOTORDRIVER_H
 
-#define SABERTOOTH_ADDRESS 130
+#include "serialport.h"
+
+#define SABERTOOTH_ADDRESS 128
 #define PACKET_LENGTH 8
 
 #define LEFT_MOTOR_FORWARD      0
@@ -14,13 +16,13 @@ class MotorDriver
 {
 public:
     MotorDriver();
-    void setSpeeds(char, char);
+    void setSpeeds(signed char, signed char);
     void sendSpeeds();
     void setMotorEnable(bool);
-    char getLeftSpeed();
-    char getRightSpeed();
+    signed char getLeftSpeed();
+    signed char getRightSpeed();
     bool getEnable();
-    void setBaudRate(int, char);
+    void setBaudRate(int, unsigned char);
 
     struct SabertoothPacket
     {
@@ -31,9 +33,10 @@ public:
     };
 
 private:
-    char myLeftSpeed;
-    char myRightSpeed;
+    signed char myLeftSpeed;
+    signed char myRightSpeed;
     bool myEnable;
+    SerialPort myPort;
 
 };
 

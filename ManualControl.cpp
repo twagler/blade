@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "mower.h"
 
 /* This thread opens the /dev/js* device and continuously
@@ -22,7 +20,7 @@ void JoystickTest()
     motors.setMotorEnable(true);    //enable the motors
     //shouldn't do this here
 
-    char leftspeed, rightspeed;     //speed values for motors L&R
+    signed char leftspeed, rightspeed;     //speed values for motors L&R
     JoystickEvent event;            //linux event object
     while (true)    //loop loop loop...
     {
@@ -98,8 +96,8 @@ void JoystickTest()
                 {
                     motors.setSpeeds(leftspeed, rightspeed);  //set the values
                     //print them
-                    printf("Speeds: (%i,%i)\r\n",
-                           (int)leftspeed, (int)rightspeed);
+                    //printf("Speeds: (%i,%i)\r\n",
+                    //       (int)leftspeed, (int)rightspeed);
                     motors.sendSpeeds();  //send the to the sabertooth
                 }
             }
