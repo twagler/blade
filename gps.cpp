@@ -25,6 +25,14 @@ double GPS::getLongitude() const
 {
     return myLongitude;
 }
+double GPS::getLatitude_radians() const
+{
+    return myLatitude*180/M_PI;
+}
+double GPS::getLongitude_radians() const
+{
+    return myLongitude*180/M_PI;
+}
 double GPS::getAltitude() const
 {
     return myAltitude;

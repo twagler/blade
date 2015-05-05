@@ -31,7 +31,7 @@ using namespace std;
 #define AUTONOMOUS  0
 #define MANUAL      1
 
-#define GPS_SERVER "192.168.1.108"
+#define GPS_SERVER "greenwellsoftware.com"
 #define GPS_PORT "50001"
 #define CONTROL_PORT "13333"   // port we're listening on
 #define MAXDATASIZE 32768
@@ -69,8 +69,8 @@ extern condition_variable cv_drive;
 
 extern MotorDriver motors;
 
-extern char adjustment;
-extern char targetspeed;
+extern signed char adjustment;
+extern signed char targetspeed;
 
 extern bool Autonomous;
 
