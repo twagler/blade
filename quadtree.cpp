@@ -1,5 +1,6 @@
 #include "quadtree.h"
 #include <cstddef>
+#include "math.h"
 
 QuadTree::QuadTree()
 {
@@ -15,7 +16,8 @@ QuadTree::QuadTree()
     this->quadrant = -1;
 
 
-    //if we are at the leaf (bottom) level, these will not populated with valid lawncoordinate objects.  If we are at any level above the bottom level, these are null
+    //if we are at the leaf (bottom) level, these will be populated with valid lawncoordinate objects.
+    //If we are at any level above the bottom level, these are null
     //LawnCoordinate leafNW;
     //LawnCoordinate leafNE;
     //LawnCoordinate leafSW;
@@ -31,24 +33,103 @@ QuadTree::QuadTree()
 /*
  * builds the quadtree
  */
-void QuadTree::build(vector<vector<LawnCoordinate>> vList)
+void QuadTree::build(vector<double[2]> gpsList)
 {
-    //need to assume that vList was created correctly
-    unsigned int x = 0;
-    unsigned int y = 0;
 
-    //we build out tree from the bottom up, one quad at a time.  So we look at our vList in 2x2 chunks.
-    //x starts at 0 but size starts at 1, plus need to check ahead one since we're grabbing 2 at a time.
-    while(x+2<vList.size())
-    {  //while the currext x value +2 is less than the # of x coordinate entries
-        while (y+2< vList.at(0).size())  //while the current y value +2 is less than the # of y coordinate entires
-        {
+    /*	This consists of 4 steps:
+     *
+     * 	1.  Accept in buffer (vector of arrays) of GPS Data
+     *
+     *  2.	Get min and max values for x and y from vector of data
+     *
+     * 	3.	Build bottom level of quad tree (leaves)
+     *
+     *  4. 	construct quad tree
+     *
+     *	5.	Correct map errors
+     *
+     */
 
-            //TODO.  This will involve calling the QuadTree::grow function
+    // STEP 1 - accept buffer of GPS data
+
+    //need to assume that  gpsList was created correctly
+    //assume only first 6 decimal digits are displayed
+    double maxX = 0;
+    double maxY = 0;
+    double minX = 0;
+    double minY = 0;
+    double tempX = 0;
+    double tempY = 0;
+
+    // STEP 2 - get max and min lat and long values
+
+
+    //set all defaults to first entry in list
+    tempX = gpsList.at(gpsList.begin())[0];
+    tempY = gpsList.at(gpsList.begin())[1];
+
+    maxX = tempX;
+    minX = tempX;
+    maxY = tempY;
+    minY = tempY;
+
+    for(vector<double[2]>::iterator it = gpsList.begin(); it != gpsList.end(); ++it){
+        tempX = gpsList.at(it)[0];
+        tempY = gpsList.at(it)[1];
+        if( tempX > maxX) {
+            maxX = tempX;
+        }
+        else if( tempX < minX){
+            minX = tempX;
+        }
+
+        if( tempY > maxY) {
+            maxY = tempY;
+        }
+        else if( tempY < minY){
+            minY = tempY;
         }
     }
+    //we shouhld now have the max and min GPS coordinates for lat and long
+
+    //STEP 3 - Build leaf bottom of quad tree framework
+
+    /*the quad tree is mostly empty structure. only the boundaries will be filled in at this point.
+     * Eventually objects will be populated and the quad tree will be used to track mowed vs nonmowed sections.
+     *
+     * The size of the bottom layer of the quad tree should be equal to the MaxX-MinX by MaxY-MinY
+     *
+     */
+
+
+    LawnCoordinate lawnCoordList[(maxX-minX)*1000000][(maxY-minY)*1000000]; //this 2D array should be the dimensions of our boundaries
+
+    for(vector<double[2]>::iterator it = gpsList.begin(); it != gpsList.end(); ++it){
+        tempX = gpsList.at(it)[0];
+        tempY = gpsList.at(it)[1];
+
+        lawnCoordList[maxX-tempX][maxY-tempY].Latitude = tempX;
+        lawnCoordList[maxX-tempX][maxY-tempY].Longitude = tempY;
+        lawnCoordList[maxX-tempX][maxY-tempY].boundary = true;
+    }
+
+    //boundaries should now be populated in lawnCoordList object.
+
+    //we can now create the quad tree structure from the leaves
+
+    //STEP 4 - Build quad tree
+
+    this->map = this->buildTree(lawnCoordList);
+
 }
 
+QuadTree QuadTree::buildTree(LawnCoordinate lCList[][]){
+}
+
+/* i'm pretty sure the following should be deleted, but i'm leaving for now.
+ * -Alan 20150505
+ *
+ *
 vector<vector<QuadTree>> QuadTree::grow(vector<vector<QuadTree>> qList)
 {
     //grows a 2dvector array of QuadTrees into a more QuadTree'd version.
@@ -113,3 +194,4 @@ vector<vector<QuadTree>> QuadTree::grow(vector<vector<QuadTree>> qList)
     return grow(newQList);
 
 }
+*/

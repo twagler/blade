@@ -10,6 +10,7 @@ public:
     QuadTree* SW;
     QuadTree* SE;
     QuadTree* parent;
+    vector<vector<QuadTree>> map;
     int quadrant;
     LawnCoordinate leafNW;
     LawnCoordinate leafNE;
@@ -20,7 +21,8 @@ public:
     int obstacle;
     QuadTree();
     void build(vector<vector<LawnCoordinate>>);
-    vector<vector<QuadTree>> grow(vector<vector<QuadTree>>);
+    QuadTree buildTree(LawnCoordinate[][]);
+    //vector<vector<QuadTree>> grow(vector<vector<QuadTree>>);
 };
 
 
