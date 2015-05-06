@@ -2,6 +2,7 @@
 #define GPS_H
 
 #include <time.h>
+#include <math.h>
 
 class GPS
 {
@@ -11,6 +12,8 @@ public:
 
     double getLatitude(void) const;
     double getLongitude(void) const;
+    double getLatitude_radians(void) const;
+    double getLongitude_radians(void) const;
     double getAltitude(void) const;
     unsigned long getSentenceCount(void) const;
     unsigned int getSignalQuality(void) const;
