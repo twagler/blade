@@ -38,3 +38,6 @@ HEADERS += \
 OTHER_FILES += \
     README.md \
     input.txt
+
+DISTFILES += \
+    Makefile
