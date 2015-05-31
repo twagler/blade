@@ -76,4 +76,5 @@ extern bool Autonomous;
 
 extern NMEAParser parser;
 
+extern ControlServer cs;
 

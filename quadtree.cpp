@@ -33,7 +33,7 @@ QuadTree::QuadTree()
 /*
  * builds the quadtree
  */
-void QuadTree::build(vector<double[2]> gpsList)
+/*void QuadTree::build(vector<double[2]> gpsList)
 {
 
     /*	This consists of 4 steps:
@@ -50,7 +50,7 @@ void QuadTree::build(vector<double[2]> gpsList)
      *
      */
 
-    // STEP 1 - accept buffer of GPS data
+/*    // STEP 1 - accept buffer of GPS data
 
     //need to assume that  gpsList was created correctly
     //assume only first 6 decimal digits are displayed
@@ -101,7 +101,7 @@ void QuadTree::build(vector<double[2]> gpsList)
      *
      */
 
-
+/*
     LawnCoordinate lawnCoordList[(maxX-minX)*1000000][(maxY-minY)*1000000]; //this 2D array should be the dimensions of our boundaries
 
     for(vector<double[2]>::iterator it = gpsList.begin(); it != gpsList.end(); ++it){

@@ -17,7 +17,6 @@ int main() {
 void InitTCPServer(void)
 {
     printf("Starting Network Control Server...\r\n");
-    ControlServer cs;
     cs.run();
     while(true);
 }

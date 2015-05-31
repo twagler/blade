@@ -1,8 +1,9 @@
 #include "mower.h"
 
 //use an array of waypoints for now.  A more robust mapping mechanism will be required
-double LATwaypoint[] = {0,   0,  38.637520810,  38.637520810,  38.637520810,  38.637520810,  38.637520810,  38.637520810};
-double LONwaypoint[] = {0, 0, -86.921577088, -86.921577088, -86.921577088, -86.921577088, -86.921577088, -86.921577088};
+double LATwaypoint[] = {0,   0,  38.637577,  38.637582,  38.637497,  38.637516,  0,  0};
+double LONwaypoint[] = {0, 0, -86.921593, -86.921520, -86.921542, -86.921513, 0, 0};
+
 
 //vector<GPS> waypoints;
 
@@ -19,6 +20,8 @@ signed char adjustment;
 signed char targetspeed = 25;
 
 MotorDriver motors;
+
+ControlServer cs;
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)

@@ -11,6 +11,29 @@ ControlServer::ControlServer()
 
 }
 
+int ControlServer::set_previous_location(GPS prev)
+{
+    try
+    {
+        my_previous_location = prev;
+    }
+    catch (int n)
+    {}
+    return 0;
+}
+
+int ControlServer::set_current_location(GPS curr)
+{
+    my_current_location = curr;
+    return 0;
+}
+
+int ControlServer::set_next_location(GPS next)
+{
+    my_next_location = next;
+    return 0;
+}
+
 void ControlServer::run(void)
 {
     int i;
@@ -42,6 +65,9 @@ void ControlServer::run(void)
     // main loop
     while(true)
     {
+        for(int i=0;i<256;i++)
+            buf[i] = 0;
+
         read_fds = master; // copy it
         if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1)
         {
@@ -89,16 +115,16 @@ void ControlServer::run(void)
                         FD_CLR(i, &master); // remove from master set
                     }
                     else // we got some data...
-                        ParseCommand(buf);
+                        ParseCommand(buf, i);
                 }
             }
         }
     }
 }
 
-void ControlServer::ParseCommand(char buf[])
+void ControlServer::ParseCommand(char buf[], int fd)
 {
-    int command, value;
+    int command, value, bytes_sent;
     stringstream ss(stringstream::in | stringstream::out);
     ss.str("");
     ss.str(string(buf));
@@ -119,6 +145,39 @@ void ControlServer::ParseCommand(char buf[])
             printf("MANUAL\r\n");
         }
         break;
+
+    case GET:
+        printf("GET received: ");
+        if(value == CURR_LOC)
+        {
+            //send the current location GPS object
+            printf("CURR_LOC\r\n");
+            //it would be awesome if the next line worked... need serialization/deserialization
+         //   if (bytes_sent = send(fd,my_current_location, sizeof(my_current_location), 0) <=0)
+         /*   {
+                // got error or connection closed by client
+                if (bytes_sent == 0) //connection closed
+                    printf("selectserver: socket %d hung up\n", fd);
+                else
+                    perror("recv");
+
+                //close(fd); // bye!
+                //FD_CLR(fd, &master); // remove from master set
+            }*/
+        }
+        else if(value == PREV_LOC)
+        {
+            //send the previous location GPS object
+            printf("PREV_LOC\r\n");
+        }
+        else if(value == NEXT_LOC)
+        {
+            //send the next location GPS object
+            printf("NEXT_LOC\r\n");
+        }
+        else
+        break;
+
     default:
         printf("Bad input.  What is: %s?", buf);
         break;
