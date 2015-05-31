@@ -115,7 +115,9 @@ void ControlServer::run(void)
                         FD_CLR(i, &master); // remove from master set
                     }
                     else // we got some data...
+
                         ParseCommand(buf, i);
+
                 }
             }
         }
@@ -125,6 +127,7 @@ void ControlServer::run(void)
 void ControlServer::ParseCommand(char buf[], int fd)
 {
     int command, value, bytes_sent;
+    std::string dataToSend;
     stringstream ss(stringstream::in | stringstream::out);
     ss.str("");
     ss.str(string(buf));
@@ -147,40 +150,46 @@ void ControlServer::ParseCommand(char buf[], int fd)
         break;
 
     case GET:
-        printf("GET received: ");
+        printf("GET received...\r\n");
         if(value == CURR_LOC)
         {
             //send the current location GPS object
-            printf("CURR_LOC\r\n");
-            //it would be awesome if the next line worked... need serialization/deserialization
-         //   if (bytes_sent = send(fd,my_current_location, sizeof(my_current_location), 0) <=0)
-         /*   {
-                // got error or connection closed by client
-                if (bytes_sent == 0) //connection closed
-                    printf("selectserver: socket %d hung up\n", fd);
-                else
-                    perror("recv");
 
-                //close(fd); // bye!
-                //FD_CLR(fd, &master); // remove from master set
-            }*/
+            dataToSend = my_current_location.toString();
+
+            if ((bytes_sent = send(fd,dataToSend.c_str(),dataToSend.size(),0)) <=0)
+            {} //do some error handling
+            else
+            {}//yay
+
         }
         else if(value == PREV_LOC)
         {
             //send the previous location GPS object
-            printf("PREV_LOC\r\n");
+            dataToSend = my_previous_location.toString();
+
+            if ((bytes_sent = send(fd,dataToSend.c_str(),dataToSend.size(),0)) <=0)
+            {} //do some error handling
+            else
+            {}//yay
         }
         else if(value == NEXT_LOC)
         {
             //send the next location GPS object
-            printf("NEXT_LOC\r\n");
+            dataToSend = my_next_location.toString();
+
+            if ((bytes_sent = send(fd,dataToSend.c_str(),dataToSend.size(),0)) <=0)
+            {} //do some error handling
+            else
+            {}//yay
         }
-        else
+
+
         break;
 
-    default:
-        printf("Bad input.  What is: %s?", buf);
-        break;
+    //default:
+    //   printf("Bad input.  What is: %s?", buf);
+     //   break;
     }
 }
 

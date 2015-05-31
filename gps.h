@@ -3,6 +3,9 @@
 
 #include <time.h>
 #include <math.h>
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 class GPS
 {
@@ -28,6 +31,8 @@ public:
     void setSatelitesInUse(unsigned int);
 
     void setTime(tm);
+
+    std::string toString();
 
 private:
 

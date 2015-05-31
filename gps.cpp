@@ -17,6 +17,25 @@ GPS::GPS(double lat,double lon)
     //myTime = tim;
 }
 
+std::string GPS::toString()
+{
+    std::string ret;
+    std::stringstream ss;
+    //ss << myLatitude << ",";
+    //ss << myLongitude << ",";
+    //ss << myAltitude << ",";
+    //ss << mySatelitesInUse << "\r\n";
+    ss << std::setprecision(12) << myLatitude << "," << myLongitude << ",";
+    ss << myAltitude << "," << mySatelitesInUse << "\r\n";
+    ret = ss.str();
+    return ret;
+
+    //char* buffer;
+    //"GPS,LAT,LON,ALT,SATS
+    //sprintf(buffer,"GPS,%f,%f,%f,%d",myLatitude,myLongitude,myAltitude,mySatelitesInUse);
+    //return buffer;
+}
+
 double GPS::getLatitude() const
 {
     return myLatitude;
