@@ -1,5 +1,14 @@
 #include "mower.h"
 
+Mower::Mower()
+{
+    thread_control_server = thread(InitTCPServer);
+    thread_GPS_receiver = thread(ReadGPS_NMEA);
+    thread_speed_setting = thread(SetSpeeds);
+    thread_navigation = thread(WaypointNavigation);
+
+}
+
 //use an array of waypoints for now.  A more robust mapping mechanism will be required
 double LATwaypoint[] = {0,   0,  38.637577,  38.637582,  38.637497,  38.637516,  0,  0};
 double LONwaypoint[] = {0, 0, -86.921593, -86.921520, -86.921542, -86.921513, 0, 0};
@@ -199,12 +208,10 @@ void SetSpeeds()
         }
 
         else if (motors.getEnable())
-            {
-                motors.setSpeeds(leftspeed, rightspeed);
-                motors.sendSpeeds();
-            }
-        //cout << "Motors: (" << (int)leftspeed << ","
-        //     << (int)rightspeed << ")\r\n";
+        {
+            motors.setSpeeds(leftspeed, rightspeed);
+            motors.sendSpeeds();
+        }
     }
 }
 float gps_distance(GPS one, GPS two)
