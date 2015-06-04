@@ -3,19 +3,15 @@
 int main() {
 
     //thread RangeSensors(InitUltraServer);
-    //thread ReceiveGPS(ReadGPS_NMEA);
-    //thread AdjustSpeed(SetSpeeds);
+    thread ReceiveGPS(ReadGPS_NMEA);
+    thread AdjustSpeed(SetSpeeds);
     //thread ControlSupervisor(ControlSwitcher);
     //thread PS3(JoystickTest);
-    //thread NetworkControl(InitTCPServer);
-    //thread Navigate(WaypointNavigation);
-
-    Mower my_mower;
+    thread NetworkControl(InitTCPServer);
+    thread Navigate(WaypointNavigation);
 
     while(1)  //bad bad bad bad bad
         this_thread::sleep_for(chrono::milliseconds(500));
-
-
 }
 
 void InitTCPServer(void)

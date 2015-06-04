@@ -1,6 +1,3 @@
-#ifndef MOWER_H
-#define MOWER_H
-
 using namespace std;
 #include <stdio.h>
 #include <iostream>
@@ -39,32 +36,6 @@ using namespace std;
 #define CONTROL_PORT "13333"   // port we're listening on
 #define MAXDATASIZE 32768
 
-class Mower
-{
-public:
-    Mower();
-private:
-
-    thread thread_control_server;
-    thread thread_GPS_receiver;
-    thread thread_speed_setting;
-    thread thread_navigation;
-
-    GPS myCurrentLocation;
-    ControlServer my_control_server;
-    NMEAParser my_NMEA_parser;
-    MotorDriver myMotors;
-
-    mutex my_gps_lock;
-    condition_variable my_cv_gps;
-
-    mutex my_drive_lock;
-    condition_variable my_cv_drive;
-
-    signed char my_adjustment;
-    signed char my_target_speed;
-};
-
 void UpdateUltraData(void);
 void WaypointNavigation(void);
 void CalcWaypoint(void);
@@ -82,6 +53,7 @@ void InitUltraServer(void);
 void InitGPSThread(void);
 void openSerial(void);
 float gps_distance(GPS,GPS);
+
 
 extern int uSonic[];
 
@@ -105,7 +77,3 @@ extern bool Autonomous;
 extern NMEAParser parser;
 
 extern ControlServer cs;
-
-#endif
-
-
