@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     NMEAParser/NMEAParser.cpp \
     serialport.cpp \
     lawnmap.cpp \
-    quadtree.cpp
+    quadtree.cpp \
+    global.cpp
 
 HEADERS += \
     gps.h \
@@ -33,7 +34,8 @@ HEADERS += \
     NMEAParser/NMEAParser.h \
     serialport.h \
     lawnmap.h \
-    quadtree.h
+    quadtree.h \
+    global.h
 
 OTHER_FILES += \
     README.md \
