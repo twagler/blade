@@ -1,16 +1,22 @@
 #include "mower.h"
 
-#define Kp        100
-#define Ki        0
-#define Kd        50
-#define ARRIVED   .00005
+/*
+ *      LATITUDE is North/South and unit equal
+ *      LONGITUDE is East/West and not unit equal
+ *
+ * */
 
-#define MAX_ADJ     50
+#define Kp        10.0
+#define Ki        0.0000
+#define Kd        1.0
+#define ARRIVED   35
+
+#define MAX_ADJ     35
 #define MIN_ADJ     -50
 
 void WaypointNavigation() {
 
-    float deltaLAT, deltaLON, deltaDIST;
+    float deltaLAT, deltaLON, deltaLAT2, deltaLON2;
 
     cout << "Starting Waypoint Navigation thread...\r\n";
 
@@ -25,7 +31,6 @@ void WaypointNavigation() {
     float derivative=0;
     signed int temp_adj;
 
-    bool first = true;
 
     GPS way, way2;
 
@@ -39,23 +44,37 @@ void WaypointNavigation() {
 
     lk_gps.unlock();
 
+    wayindex++;
+    way.setLatitude(LATwaypoint[wayindex]);
+    way.setLongitude(LONwaypoint[wayindex]);
+    way2.setLatitude(LATwaypoint[wayindex+1]);
+    way2.setLongitude(LONwaypoint[wayindex+1]);
+
+    //these three give a sometimes correct sign result with a nonsensical magnitude
+    //that by the way is not scaled appropriately for the non-uniform longitude
+    deltaLAT = way2.getLatitude() - way.getLatitude();
+    deltaLON = way2.getLongitude() - way.getLongitude();
+    //deltaDIST = sqrt(deltaLAT*deltaLAT+deltaLON*deltaLON);
+
+    //these three give a non-signed result with an accurate magnitude
+    deltaLAT2 = gps_distance(GPS(way2.getLatitude(), way2.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+    deltaLON2 = gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+    PathLength = gps_distance(way,way2);
+
+    //I believe we need to figure out what sign belongs where according to our heading
+    //for instance when traveling northisheastish, the deltaLAT should be +
+    //and the deltaLON should be (something)
+
+
     while(true)
     {
 
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
-        way.setLatitude(LATwaypoint[wayindex]);
-        way.setLongitude(LONwaypoint[wayindex]);
-        way2.setLatitude(LATwaypoint[wayindex+1]);
-        way2.setLongitude(LONwaypoint[wayindex+1]);
         distance = gps_distance(way2, gps);
 
-        cs.set_previous_location(way);
-        cs.set_current_location(gps);
-        cs.set_next_location(way2);
-
-        if (distance < ARRIVED || first)  //arrived @ waypoint
+        if (distance < ARRIVED)  //arrived @ waypoint
         {
             wayindex++;
 
@@ -64,11 +83,12 @@ void WaypointNavigation() {
             way2.setLatitude(LATwaypoint[wayindex+1]);
             way2.setLongitude(LONwaypoint[wayindex+1]);
 
-            first = false;
-
             deltaLAT = way2.getLatitude() - way.getLatitude();
             deltaLON = way2.getLongitude() - way.getLongitude();
-            deltaDIST = sqrt(deltaLAT*deltaLAT+deltaLON*deltaLON);
+
+            deltaLAT2 = gps_distance(GPS(way2.getLatitude(), way2.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+            deltaLON2 = gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+
             PathLength = gps_distance(way,way2);
 
         }
@@ -76,7 +96,11 @@ void WaypointNavigation() {
         else //Travel toward waypoint
         {
 
-            difference = (deltaLON*(way.getLatitude()-gps.getLatitude()) - deltaLAT*(way.getLongitude()-gps.getLongitude())/deltaDIST);
+            difference = (deltaLON2*(gps_distance(GPS(gps.getLatitude(),gps.getLongitude()),GPS(way.getLatitude(),gps.getLongitude())))
+                          -deltaLAT2*(gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(gps.getLatitude(), way.getLongitude()))))/PathLength;
+
+            if(deltaLAT*deltaLON < 0)
+                difference*=-1;
 
             derivative = difference - lasterror;
             integral = integral + (difference+lasterror)/2;
@@ -99,35 +123,32 @@ void WaypointNavigation() {
 
             drive_lock.unlock();
             cv_drive.notify_one();
+            //DEBUG
+            printf("\r\n");
+            printf("*********************************************************\r\n");
+            printf("*           Blade Navigation Inputs/Outputs             *\r\n");
+            printf("*-------------------------------------------------------*\r\n");
+            printf("*| Current waypoint:\t%.4i\tMode: %d\t\t       |*\r\n",
+                   wayindex,Autonomous);
+            printf("*| Solution Quality:\t%i   Number of Satellites: %.2i   |*\r\n",
+                   gps.getSignalQuality(), gps.getSatelitesInUse());
+            printf("*| Current Location:\t%f N,\t%f W   |*\r\n",
+                   gps.getLatitude(), gps.getLongitude());
+            printf("*| Target Location:\t%f N,\t%f W   |*\r\n",
+                   LATwaypoint[wayindex+1], LONwaypoint[wayindex+1]);
+            printf("*| Distance to Target:\t%011.0f centimeters\t       |*\r\n",
+                   distance);
+            printf("*-------------------------------------------------------*\r\n");
+            printf("* Path Length: %f centimeters\t\t\t*\r\n", PathLength);
+            printf("* Path Error:\t%f centimeters\t\t\t*\r\n", difference);
+            printf("* Gains:\tP: %f I: %f D: %f\t*\r\n",Kp,Ki,Kd);
+            printf("* Corrections:\tP: %f I: %f D: %f\t*\r\n",
+                   difference, integral, derivative);
+            printf("* Total Correction:\t%3d\t\t\t\t*\r\n", adjustment);
+            //DEBUG
 
         }
         lk_gps.unlock();
-
-        //DEBUG
-        printf("\r\n");
-        printf("*********************************************************\r\n");
-        printf("*           Blade Navigation Inputs/Outputs             *\r\n");
-        printf("*-------------------------------------------------------*\r\n");
-        printf("*| Current waypoint:\t%.4i\tMode: %d\t\t       |*\r\n",
-               wayindex,Autonomous);
-        printf("*| Solution Quality:\t%i   Number of Satellites: %.2i   |*\r\n",
-               gps.getSignalQuality(), gps.getSatelitesInUse());
-        printf("*| Current Location:\t%f N,\t%f E   |*\r\n",
-               gps.getLatitude(), gps.getLongitude());
-        printf("*| Target Location:\t%f N,\t%f E   |*\r\n",
-               LATwaypoint[wayindex+1], LONwaypoint[wayindex+1]);
-        printf("*| Distance to Target:\t%011.0f centimeters\t       |*\r\n",
-               distance);
-        printf("*-------------------------------------------------------*\r\n");
-        printf("* Path Length: %f centimeters\t\t\t*\r\n", PathLength);
-        printf("* Path Error:\t%f centimeters\t\t\t*\r\n", difference);
-        printf("* Gains:\tP: %d\tI: %d\tD: %d\t\t\t*\r\n",Kp,Ki,Kd);
-        printf("* Corrections:\tP: %f I: %f D: %f\t*\r\n",
-               difference, integral, derivative);
-        printf("* Total Correction:\t%3d\t\t\t\t*\r\n", adjustment);
-        //DEBUG
-
-        this_thread::sleep_for(chrono::milliseconds(500));
     }
     return;
 }

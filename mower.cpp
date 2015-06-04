@@ -15,9 +15,8 @@ mutex drive_lock;
 condition_variable cv_drive;
 
 bool Autonomous = false;
-bool first = true;
 signed char adjustment;
-signed char targetspeed = 25;
+signed char targetspeed = 35;
 
 MotorDriver motors;
 
