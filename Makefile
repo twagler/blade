@@ -47,7 +47,6 @@ OBJECTS_DIR   = ./
 SOURCES       = ../blade/main.cpp \
 		../blade/gps.cpp \
 		../blade/mower.cpp \
-		../blade/Print.cpp \
 		../blade/WaypointNavigation.cpp \
 		../blade/motordriver.cpp \
 		../blade/joystick.cpp \
@@ -62,7 +61,6 @@ SOURCES       = ../blade/main.cpp \
 OBJECTS       = main.o \
 		gps.o \
 		mower.o \
-		Print.o \
 		WaypointNavigation.o \
 		motordriver.o \
 		joystick.o \
@@ -88,7 +86,6 @@ DIST          = gps.h \
 		quadtree.h ../blade/main.cpp \
 		../blade/gps.cpp \
 		../blade/mower.cpp \
-		../blade/Print.cpp \
 		../blade/WaypointNavigation.cpp \
 		../blade/motordriver.cpp \
 		../blade/joystick.cpp \
@@ -160,9 +157,6 @@ mower.o: ../blade/mower.cpp ../blade/mower.h \
 		../blade/libGPIO/libgpio.h \
 		../blade/NMEAParser/NMEAParser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mower.o ../blade/mower.cpp
-
-Print.o: ../blade/Print.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Print.o ../blade/Print.cpp
 
 WaypointNavigation.o: ../blade/WaypointNavigation.cpp ../blade/mower.h \
 		../blade/gps.h \
