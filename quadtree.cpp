@@ -36,7 +36,7 @@ QuadTree::QuadTree()
 /*void QuadTree::build(vector<double[2]> gpsList)
 {
 
-    /*	This consists of 4 steps:
+        This consists of 4 steps:
      *
      * 	1.  Accept in buffer (vector of arrays) of GPS Data
      *
@@ -48,9 +48,9 @@ QuadTree::QuadTree()
      *
      *	5.	Correct map errors
      *
-     */
 
-/*    // STEP 1 - accept buffer of GPS data
+
+    // STEP 1 - accept buffer of GPS data
 
     //need to assume that  gpsList was created correctly
     //assume only first 6 decimal digits are displayed
@@ -94,14 +94,14 @@ QuadTree::QuadTree()
 
     //STEP 3 - Build leaf bottom of quad tree framework
 
-    /*the quad tree is mostly empty structure. only the boundaries will be filled in at this point.
+    the quad tree is mostly empty structure. only the boundaries will be filled in at this point.
      * Eventually objects will be populated and the quad tree will be used to track mowed vs nonmowed sections.
      *
      * The size of the bottom layer of the quad tree should be equal to the MaxX-MinX by MaxY-MinY
      *
-     */
 
-/*
+
+
     LawnCoordinate lawnCoordList[(maxX-minX)*1000000][(maxY-minY)*1000000]; //this 2D array should be the dimensions of our boundaries
 
     for(vector<double[2]>::iterator it = gpsList.begin(); it != gpsList.end(); ++it){
@@ -126,7 +126,7 @@ QuadTree::QuadTree()
 QuadTree QuadTree::buildTree(LawnCoordinate lCList[][]){
 }
 
-/* i'm pretty sure the following should be deleted, but i'm leaving for now.
+ i'm pretty sure the following should be deleted, but i'm leaving for now.
  * -Alan 20150505
  *
  *

@@ -20,6 +20,7 @@ using namespace std;
 #include "ultrasonic.h"
 #include "libGPIO/libgpio.h"
 #include "NMEAParser/NMEAParser.h"
+#include "global.h"
 
 #define DEBUG
 
@@ -37,15 +38,14 @@ using namespace std;
 #define MAXDATASIZE 32768
 
 void UpdateUltraData(void);
-void WaypointNavigation(void);
+void WaypointNavigation();
 void CalcWaypoint(void);
 void Print(GPS);
 void SetSpeeds(void);
 void ReadGPS_RTKLIB(void);
-void ReadGPS_NMEA(void);
+void ReadGPS_NMEA();
 void WriteGPS(void);
 void JoystickTest(void);
-void ControlSwitcher(void);
 void InitTCPServer(void);
 int ControlServerInit(const char*);
 void *get_in_addr(struct sockaddr *sa);
@@ -54,7 +54,6 @@ void InitGPSThread(void);
 void openSerial(void);
 float gps_distance(GPS,GPS);
 
-
 extern int uSonic[];
 
 extern double LATwaypoint[];
@@ -62,18 +61,16 @@ extern double LONwaypoint[];
 
 extern mutex gps_lock;
 extern condition_variable cv_gps;
-extern GPS gps;
 
 extern mutex drive_lock;
 extern condition_variable cv_drive;
 
 extern MotorDriver motors;
 
-extern signed char adjustment;
-extern signed char targetspeed;
-
 extern bool Autonomous;
 
 extern NMEAParser parser;
 
 extern ControlServer cs;
+
+extern Global myGlobal;

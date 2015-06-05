@@ -1,4 +1,5 @@
 #include "mower.h"
+#include "global.h"
 
 /*
  *      LATITUDE is North/South and unit equal
@@ -31,16 +32,17 @@ void WaypointNavigation() {
     float derivative=0;
     signed int temp_adj;
 
-
     GPS way, way2;
 
     unique_lock<mutex> lk_gps(gps_lock);
     cv_gps.wait(lk_gps);
+
     //set first waypoint to where we are
-    LATwaypoint[0] = gps.getLatitude();
-    LONwaypoint[0] = gps.getLongitude();
-    LATwaypoint[1] = gps.getLatitude();
-    LONwaypoint[1] = gps.getLongitude();
+
+    LATwaypoint[0] = myGlobal.get_myCurrentLocation().getLatitude();
+    LONwaypoint[0] = myGlobal.get_myCurrentLocation().getLongitude();
+    LATwaypoint[1] = myGlobal.get_myCurrentLocation().getLatitude();
+    LONwaypoint[1] = myGlobal.get_myCurrentLocation().getLongitude();
 
     lk_gps.unlock();
 
@@ -72,7 +74,7 @@ void WaypointNavigation() {
         unique_lock<mutex> lk_gps(gps_lock);
         cv_gps.wait(lk_gps);
 
-        distance = gps_distance(way2, gps);
+        distance = gps_distance(way2,myGlobal.get_myCurrentLocation());
 
         if (distance < ARRIVED)  //arrived @ waypoint
         {
@@ -96,8 +98,11 @@ void WaypointNavigation() {
         else //Travel toward waypoint
         {
 
-            difference = (deltaLON2*(gps_distance(GPS(gps.getLatitude(),gps.getLongitude()),GPS(way.getLatitude(),gps.getLongitude())))
-                          -deltaLAT2*(gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(gps.getLatitude(), way.getLongitude()))))/PathLength;
+            difference = (deltaLON2*gps_distance(GPS(myGlobal.get_myCurrentLocation().getLatitude(),myGlobal.get_myCurrentLocation().getLongitude()),
+                                                 GPS(way.getLatitude(),myGlobal.get_myCurrentLocation().getLongitude()))
+                          -deltaLAT2*gps_distance(GPS(way.getLatitude(),way.getLongitude()),
+                                                  GPS(myGlobal.get_myCurrentLocation().getLatitude(),way.getLongitude())))
+                    /PathLength;
 
             if(deltaLAT*deltaLON < 0)
                 difference*=-1;
@@ -118,7 +123,8 @@ void WaypointNavigation() {
 
             drive_lock.lock();
 
-            adjustment = temp_adj;  //assuming this auto-casts?
+            //adjustment = temp_adj;  //assuming this auto-casts?
+            myGlobal.set_myAdjustment(temp_adj);
 
 
             drive_lock.unlock();
@@ -131,9 +137,11 @@ void WaypointNavigation() {
             printf("*| Current waypoint:\t%.4i\tMode: %d\t\t       |*\r\n",
                    wayindex,Autonomous);
             printf("*| Solution Quality:\t%i   Number of Satellites: %.2i   |*\r\n",
-                   gps.getSignalQuality(), gps.getSatelitesInUse());
+                   myGlobal.get_myCurrentLocation().getSignalQuality(),
+                   myGlobal.get_myCurrentLocation().getSatelitesInUse());
             printf("*| Current Location:\t%f N,\t%f W   |*\r\n",
-                   gps.getLatitude(), gps.getLongitude());
+                   myGlobal.get_myCurrentLocation().getLatitude(),
+                   myGlobal.get_myCurrentLocation().getLongitude());
             printf("*| Target Location:\t%f N,\t%f W   |*\r\n",
                    LATwaypoint[wayindex+1], LONwaypoint[wayindex+1]);
             printf("*| Distance to Target:\t%011.0f centimeters\t       |*\r\n",
@@ -144,7 +152,7 @@ void WaypointNavigation() {
             printf("* Gains:\tP: %f I: %f D: %f\t*\r\n",Kp,Ki,Kd);
             printf("* Corrections:\tP: %f I: %f D: %f\t*\r\n",
                    difference, integral, derivative);
-            printf("* Total Correction:\t%3d\t\t\t\t*\r\n", adjustment);
+            printf("* Total Correction:\t%3d\t\t\t\t*\r\n", myGlobal.get_myAdjustment());
             //DEBUG
 
         }

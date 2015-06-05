@@ -11,29 +11,6 @@ ControlServer::ControlServer()
 
 }
 
-int ControlServer::set_previous_location(GPS prev)
-{
-    try
-    {
-        my_previous_location = prev;
-    }
-    catch (int n)
-    {}
-    return 0;
-}
-
-int ControlServer::set_current_location(GPS curr)
-{
-    my_current_location = curr;
-    return 0;
-}
-
-int ControlServer::set_next_location(GPS next)
-{
-    my_next_location = next;
-    return 0;
-}
-
 void ControlServer::run(void)
 {
     int i;
@@ -155,7 +132,7 @@ void ControlServer::ParseCommand(char buf[], int fd)
         {
             //send the current location GPS object
 
-            dataToSend = my_current_location.toString();
+            dataToSend = myGlobal.get_myCurrentLocation().toString();
 
             if ((bytes_sent = send(fd,dataToSend.c_str(),dataToSend.size(),0)) <=0)
             {} //do some error handling
@@ -166,7 +143,7 @@ void ControlServer::ParseCommand(char buf[], int fd)
         else if(value == PREV_LOC)
         {
             //send the previous location GPS object
-            dataToSend = my_previous_location.toString();
+            dataToSend = myGlobal.get_myPreviousWaypoint().toString();
 
             if ((bytes_sent = send(fd,dataToSend.c_str(),dataToSend.size(),0)) <=0)
             {} //do some error handling
@@ -176,7 +153,7 @@ void ControlServer::ParseCommand(char buf[], int fd)
         else if(value == NEXT_LOC)
         {
             //send the next location GPS object
-            dataToSend = my_next_location.toString();
+            dataToSend = myGlobal.get_myNextWaypoint().toString();
 
             if ((bytes_sent = send(fd,dataToSend.c_str(),dataToSend.size(),0)) <=0)
             {} //do some error handling

@@ -14,9 +14,9 @@ GPS gps;
 mutex drive_lock;
 condition_variable cv_drive;
 
+Global myGlobal;
+
 bool Autonomous = false;
-signed char adjustment;
-signed char targetspeed = 35;
 
 MotorDriver motors;
 
@@ -157,6 +157,7 @@ void ReadGPS_NMEA()
         {
             gps_lock.lock();
             gps = temp;
+            myGlobal.set_myCurrentLocation(temp);
             gps_lock.unlock();
             cv_gps.notify_one();
         }
@@ -176,8 +177,8 @@ void SetSpeeds()
         unique_lock<mutex> lk_drive(drive_lock);
         cv_drive.wait(lk_drive);
 
-        leftspeed = targetspeed - adjustment;
-        rightspeed = targetspeed + adjustment;
+        leftspeed = myGlobal.get_myTargetSpeed() - myGlobal.get_myAdjustment();
+        rightspeed = myGlobal.get_myTargetSpeed() + myGlobal.get_myAdjustment();
 
         lk_drive.unlock();
 

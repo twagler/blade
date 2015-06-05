@@ -1,4 +1,5 @@
 #include "mower.h"
+#include "global.h"
 
 int main() {
 
@@ -30,33 +31,5 @@ void InitUltraServer(void)
         us.updateUltra();
         printf("Refreshed Sensors...\r\n");
         this_thread::sleep_for(chrono::seconds(1));
-    }
-}
-
-void ControlSwitcher()
-{
-    //Initialize the thread object
-    thread Navigate;
-
-    //infinite loop here
-    while(true)
-    {
-        //if we're operating in Autonomous mode, kick off the WaypointNavigation thread
-        if(Autonomous)
-            Navigate = thread(WaypointNavigation);
-
-        //Continue to operate in autonomous mode until something kicks us out of auto
-        while(Autonomous)
-            this_thread::sleep_for(chrono::milliseconds(10));
-
-        //join the thread when booted out of auto
-        if(Navigate.joinable())
-        {
-            Navigate.join();
-            printf("Killed Waypoint Navigation thread...\r\n");
-        }
-
-        //give the CPU a break...
-        this_thread::sleep_for(chrono::milliseconds(500));
     }
 }
