@@ -15,6 +15,8 @@ CXX           = g++
 DEFINES       = 
 CFLAGS        = -pipe -g -Wall -W -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -g -std=c++0x -Wall -W -fPIE $(DEFINES)
+INCPATH       = -I../blade -I. -I../Qt/5.4/gcc_64/mkspecs/linux-g++
+QMAKE         = /home/tyler/Qt/5.4/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
 MKDIR         = mkdir -p
@@ -30,6 +32,8 @@ DEL_DIR       = rmdir
 MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
+DISTNAME      = blade1.0.0
+DISTDIR = /home/tyler/blade/.tmp/blade1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/tyler/Qt/5.4/gcc_64
 LIBS          = $(SUBLIBS) -pthread 
@@ -57,7 +61,8 @@ SOURCES       = ../blade/main.cpp \
 		../blade/NMEAParser/NMEAParser.cpp \
 		../blade/serialport.cpp \
 		../blade/lawnmap.cpp \
-		../blade/quadtree.cpp 
+		../blade/quadtree.cpp \
+		../blade/global.cpp 
 OBJECTS       = main.o \
 		gps.o \
 		mower.o \
@@ -71,7 +76,8 @@ OBJECTS       = main.o \
 		NMEAParser.o \
 		serialport.o \
 		lawnmap.o \
-		quadtree.o
+		quadtree.o \
+		global.o
 DIST          = gps.h \
 		motordriver.h \
 		mower.h \
@@ -83,7 +89,8 @@ DIST          = gps.h \
 		NMEAParser/NMEAParser.h \
 		serialport.h \
 		lawnmap.h \
-		quadtree.h ../blade/main.cpp \
+		quadtree.h \
+		global.h ../blade/main.cpp \
 		../blade/gps.cpp \
 		../blade/mower.cpp \
 		../blade/WaypointNavigation.cpp \
@@ -96,7 +103,9 @@ DIST          = gps.h \
 		../blade/NMEAParser/NMEAParser.cpp \
 		../blade/serialport.cpp \
 		../blade/lawnmap.cpp \
-		../blade/quadtree.cpp
+		../blade/quadtree.cpp \
+		../blade/global.cpp
+
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = blade
 
@@ -132,17 +141,30 @@ clean:compiler_clean
 	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
 
+####### Sub-libraries
+
+check: first
+
+compiler_yacc_decl_make_all:
+compiler_yacc_decl_clean:
+compiler_yacc_impl_make_all:
+compiler_yacc_impl_clean:
+compiler_lex_make_all:
+compiler_lex_clean:
+compiler_clean: 
 
 ####### Compile
 
 main.o: ../blade/main.cpp ../blade/mower.h \
 		../blade/gps.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../blade/main.cpp
 
 gps.o: ../blade/gps.cpp ../blade/gps.h
@@ -151,31 +173,37 @@ gps.o: ../blade/gps.cpp ../blade/gps.h
 mower.o: ../blade/mower.cpp ../blade/mower.h \
 		../blade/gps.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mower.o ../blade/mower.cpp
 
 WaypointNavigation.o: ../blade/WaypointNavigation.cpp ../blade/mower.h \
 		../blade/gps.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o WaypointNavigation.o ../blade/WaypointNavigation.cpp
 
 motordriver.o: ../blade/motordriver.cpp ../blade/mower.h \
 		../blade/gps.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o motordriver.o ../blade/motordriver.cpp
 
 joystick.o: ../blade/joystick.cpp ../blade/joystick.h
@@ -184,31 +212,37 @@ joystick.o: ../blade/joystick.cpp ../blade/joystick.h
 ManualControl.o: ../blade/ManualControl.cpp ../blade/mower.h \
 		../blade/gps.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ManualControl.o ../blade/ManualControl.cpp
 
 controlserver.o: ../blade/controlserver.cpp ../blade/controlserver.h \
-		../blade/mower.h \
 		../blade/gps.h \
+		../blade/mower.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o controlserver.o ../blade/controlserver.cpp
 
 ultrasonic.o: ../blade/ultrasonic.cpp ../blade/mower.h \
 		../blade/gps.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ultrasonic.o ../blade/ultrasonic.cpp
 
 libgpio.o: ../blade/libGPIO/libgpio.cpp ../blade/libGPIO/libgpio.h
@@ -225,11 +259,13 @@ lawnmap.o: ../blade/lawnmap.cpp ../blade/lawnmap.h \
 		../blade/gps.h \
 		../blade/mower.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o lawnmap.o ../blade/lawnmap.cpp
 
 quadtree.o: ../blade/quadtree.cpp ../blade/quadtree.h \
@@ -237,9 +273,15 @@ quadtree.o: ../blade/quadtree.cpp ../blade/quadtree.h \
 		../blade/gps.h \
 		../blade/mower.h \
 		../blade/motordriver.h \
+		../blade/serialport.h \
 		../blade/joystick.h \
 		../blade/controlserver.h \
 		../blade/ultrasonic.h \
 		../blade/libGPIO/libgpio.h \
-		../blade/NMEAParser/NMEAParser.h
+		../blade/NMEAParser/NMEAParser.h \
+		../blade/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o quadtree.o ../blade/quadtree.cpp
+
+global.o: ../blade/global.cpp ../blade/global.h \
+		../blade/gps.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o global.o ../blade/global.cpp
