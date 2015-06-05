@@ -8,7 +8,6 @@ LIBS += -pthread
 SOURCES += main.cpp \
     gps.cpp \
     mower.cpp \
-    Print.cpp \
     WaypointNavigation.cpp \
     motordriver.cpp \
     joystick.cpp \
