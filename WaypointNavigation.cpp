@@ -7,17 +7,17 @@
  *
  * */
 
-#define Kp        10.0
+#define Kp        0.5
 #define Ki        0.0000
-#define Kd        1.0
-#define ARRIVED   35
+#define Kd        0.05
+#define ARRIVED   35 //cm
 
 #define MAX_ADJ     35
 #define MIN_ADJ     -50
 
 void WaypointNavigation() {
 
-    float deltaLAT, deltaLON, deltaLAT2, deltaLON2;
+    float deltaLAT, deltaLON, temp1, temp2, temp3, temp4;
 
     cout << "Starting Waypoint Navigation thread...\r\n";
 
@@ -52,15 +52,12 @@ void WaypointNavigation() {
     way2.setLatitude(LATwaypoint[wayindex+1]);
     way2.setLongitude(LONwaypoint[wayindex+1]);
 
-    //these three give a sometimes correct sign result with a nonsensical magnitude
-    //that by the way is not scaled appropriately for the non-uniform longitude
-    deltaLAT = way2.getLatitude() - way.getLatitude();
-    deltaLON = way2.getLongitude() - way.getLongitude();
-    //deltaDIST = sqrt(deltaLAT*deltaLAT+deltaLON*deltaLON);
-
-    //these three give a non-signed result with an accurate magnitude
-    deltaLAT2 = gps_distance(GPS(way2.getLatitude(), way2.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
-    deltaLON2 = gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+    deltaLAT = gps_distance(GPS(way2.getLatitude(), way2.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+    if(way2.getLatitude()-way.getLatitude() < 0)
+        deltaLAT*=-1;
+    deltaLON = gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+    if((way2.getLongitude()-way.getLongitude()) < 0)
+        deltaLON*=-1;
     PathLength = gps_distance(way,way2);
 
     //I believe we need to figure out what sign belongs where according to our heading
@@ -85,11 +82,12 @@ void WaypointNavigation() {
             way2.setLatitude(LATwaypoint[wayindex+1]);
             way2.setLongitude(LONwaypoint[wayindex+1]);
 
-            deltaLAT = way2.getLatitude() - way.getLatitude();
-            deltaLON = way2.getLongitude() - way.getLongitude();
-
-            deltaLAT2 = gps_distance(GPS(way2.getLatitude(), way2.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
-            deltaLON2 = gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+            deltaLAT = gps_distance(GPS(way2.getLatitude(), way2.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+            if(way2.getLatitude()-way.getLatitude() < 0)
+                deltaLAT*=-1;
+            deltaLON = gps_distance(GPS(way.getLatitude(), way.getLongitude()),GPS(way.getLatitude(), way2.getLongitude()));
+            if((way2.getLongitude()-way.getLongitude()) < 0)
+                deltaLON*=-1;
 
             PathLength = gps_distance(way,way2);
 
@@ -97,15 +95,28 @@ void WaypointNavigation() {
 
         else //Travel toward waypoint
         {
+            //magnitude
+            temp1 = gps_distance(GPS(myGlobal.get_myCurrentLocation().getLatitude(),myGlobal.get_myCurrentLocation().getLongitude()),
+                                 GPS(way.getLatitude(),myGlobal.get_myCurrentLocation().getLongitude()));
 
-            difference = (deltaLON2*gps_distance(GPS(myGlobal.get_myCurrentLocation().getLatitude(),myGlobal.get_myCurrentLocation().getLongitude()),
-                                                 GPS(way.getLatitude(),myGlobal.get_myCurrentLocation().getLongitude()))
-                          -deltaLAT2*gps_distance(GPS(way.getLatitude(),way.getLongitude()),
-                                                  GPS(myGlobal.get_myCurrentLocation().getLatitude(),way.getLongitude())))
-                    /PathLength;
+            //sign
+            temp2 = way.getLatitude() - myGlobal.get_myCurrentLocation().getLatitude();
 
-            if(deltaLAT*deltaLON < 0)
-                difference*=-1;
+            //magnitude
+            temp3 = gps_distance(GPS(way.getLatitude(),way.getLongitude()),
+                                 GPS(myGlobal.get_myCurrentLocation().getLatitude(),way.getLongitude()));
+
+            //sign
+            temp4 = way.getLongitude() - myGlobal.get_myCurrentLocation().getLongitude();
+
+            //sign the magnitude
+            if(temp2 < 0)
+                temp1*=-1;
+
+            if(temp4 < 0)
+                temp3*=-1;
+
+            difference = ((deltaLON*temp1)-(deltaLAT*temp3))/PathLength;
 
             derivative = difference - lasterror;
             integral = integral + (difference+lasterror)/2;

@@ -3,7 +3,6 @@
 Global::Global()
 {
     myTargetSpeed = 35;
-
 }
 
 GPS Global::get_myCurrentLocation()
