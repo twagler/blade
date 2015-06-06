@@ -9,7 +9,6 @@ double LONwaypoint[] = {0, 0, -86.921593, -86.921520, -86.921542, -86.921513, 0,
 
 mutex gps_lock;
 condition_variable cv_gps;
-GPS gps;
 
 mutex drive_lock;
 condition_variable cv_drive;
@@ -156,7 +155,6 @@ void ReadGPS_NMEA()
         if(temp.getSignalQuality() != 0)
         {
             gps_lock.lock();
-            gps = temp;
             myGlobal.set_myCurrentLocation(temp);
             gps_lock.unlock();
             cv_gps.notify_one();
@@ -203,8 +201,6 @@ void SetSpeeds()
                 motors.setSpeeds(leftspeed, rightspeed);
                 motors.sendSpeeds();
             }
-        //cout << "Motors: (" << (int)leftspeed << ","
-        //     << (int)rightspeed << ")\r\n";
     }
 }
 float gps_distance(GPS one, GPS two)

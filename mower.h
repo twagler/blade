@@ -39,11 +39,10 @@ using namespace std;
 #define MAXDATASIZE 32768
 
 void UpdateUltraData(void);
-void WaypointNavigation();
+void WaypointNavigation(void);
 void CalcWaypoint(void);
 void Print(GPS);
 void SetSpeeds(void);
-void ReadGPS_RTKLIB(void);
 void ReadGPS_NMEA();
 void WriteGPS(void);
 void JoystickTest(void);

@@ -21,6 +21,15 @@ public:
     signed char get_myTargetSpeed();
     int set_myTargetSpeed(signed char);
 
+    float get_myKp();
+    int set_myKp(float);
+
+    float get_myKi();
+    int set_myKi(float);
+
+    float get_myKd();
+    int set_myKd(float);
+
 private:
     GPS myCurrentLocation;
     GPS myPreviousWaypoint;
@@ -28,6 +37,10 @@ private:
 
     signed char myAdjustment;
     signed char myTargetSpeed;
+
+    float myKp;
+    float myKi;
+    float myKd;
 
 };
 

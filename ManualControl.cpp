@@ -33,7 +33,11 @@ void JoystickTest()
                 {
                 case PS:    //playstation button
                     if(event.value==0)  //only trigger on the down-press
+                    {
                         Autonomous = !Autonomous; //toggle auto
+                        leftspeed = 0;
+                        rightspeed = 0;
+                    }
 
                     printf("PS is: "); //print button label
                     break;

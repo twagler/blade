@@ -7,9 +7,6 @@
  *
  * */
 
-#define Kp        0.5
-#define Ki        0.0000
-#define Kd        0.05
 #define ARRIVED   35 //cm
 
 #define MAX_ADJ     35
@@ -125,7 +122,7 @@ void WaypointNavigation() {
             lasterror = difference;
 
             //figure out some logical caps...
-            temp_adj = Kp*difference+Kd*derivative+Ki*integral;    //PID
+            temp_adj = myGlobal.get_myKp()*difference+myGlobal.get_myKi()*integral+myGlobal.get_myKd()*derivative;    //PID
             if (temp_adj > MAX_ADJ)
                 temp_adj = MAX_ADJ;
             else if (temp_adj < MIN_ADJ)
@@ -160,7 +157,7 @@ void WaypointNavigation() {
             printf("*-------------------------------------------------------*\r\n");
             printf("* Path Length: %f centimeters\t\t\t*\r\n", PathLength);
             printf("* Path Error:\t%f centimeters\t\t\t*\r\n", difference);
-            printf("* Gains:\tP: %f I: %f D: %f\t*\r\n",Kp,Ki,Kd);
+            printf("* Gains:\tP: %f I: %f D: %f\t*\r\n",myGlobal.get_myKp(),myGlobal.get_myKi(),myGlobal.get_myKd());
             printf("* Corrections:\tP: %f I: %f D: %f\t*\r\n",
                    difference, integral, derivative);
             printf("* Total Correction:\t%3d\t\t\t\t*\r\n", myGlobal.get_myAdjustment());
