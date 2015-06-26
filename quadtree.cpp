@@ -101,16 +101,16 @@ void QuadTree::build(vector<double[2]> gpsList)
      */
 
 
-/*  DEBUG ME
-    LawnCoordinate lawnCoordList[(maxX-minX)*1000000][(maxY-minY)*1000000]; //this 2D array should be the dimensions of our boundaries
+    //this 2D array should be the dimensions of our boundaries
+    LawnCoordinate lawnCoordList[(int)((maxX-minX)*1000000)][(int)((maxY-minY)*1000000)];
 
     for(int it=0; it < gpsList.size();  ++it){
         tempX = gpsList.at(it)[0];
         tempY = gpsList.at(it)[1];
 
-        lawnCoordList[maxX-tempX][maxY-tempY].Latitude = tempX;
-        lawnCoordList[maxX-tempX][maxY-tempY].Longitude = tempY;
-        lawnCoordList[maxX-tempX][maxY-tempY].boundary = true;
+        lawnCoordList[(int)((maxX-tempX))][(int)(maxY-tempY)].Latitude = tempX;
+        lawnCoordList[(int)(maxX-tempX)][(int)(maxY-tempY)].Longitude = tempY;
+        lawnCoordList[(int)(maxX-tempX)][(int)(maxY-tempY)].boundary = true;
     }
 
     //boundaries should now be populated in lawnCoordList object.
@@ -119,10 +119,10 @@ void QuadTree::build(vector<double[2]> gpsList)
 
     //STEP 4 - Build quad tree
 
-    this->map = this->buildTree(&lawnCoordList);
+    this->map = *(this->buildTree(*lawnCoordList));
 
-*/
+
 }
-QuadTree QuadTree::buildTree(LawnCoordinate *lCList){
+QuadTree* QuadTree::buildTree(LawnCoordinate *lCList){
 }
 
