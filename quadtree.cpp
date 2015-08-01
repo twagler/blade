@@ -61,6 +61,8 @@ void QuadTree::build(vector<double[2]> gpsList)
     double tempX = 0;
     double tempY = 0;
 
+    //gpsList is the buffer
+
     // STEP 2 - get max and min lat and long values
 
 
@@ -73,7 +75,7 @@ void QuadTree::build(vector<double[2]> gpsList)
     maxY = tempY;
     minY = tempY;
 
-    for(int it=0;it < gpsList.size(); ++it){
+    for(int it=0;it < (int)gpsList.size(); ++it){
         tempX = gpsList.at(it)[0];
         tempY = gpsList.at(it)[1];
         if( tempX > maxX) {
@@ -101,10 +103,22 @@ void QuadTree::build(vector<double[2]> gpsList)
      */
 
 
-    //this 2D array should be the dimensions of our boundaries
-    LawnCoordinate lawnCoordList[(int)((maxX-minX)*1000000)][(int)((maxY-minY)*1000000)];
+    //this 2D vector should be the dimensions of our boundaries
+    //LawnCoordinate lawnCoordList[(int)((maxX-minX)*1000000)][(int)((maxY-minY)*1000000)];
 
-    for(int it=0; it < gpsList.size();  ++it){
+    int xSize = (int)((maxX-minX)*1000000);
+    int ySize = (int)((maxY-minY)*1000000);
+
+    //vector<LawnCoordinate> lawnCoordList[xSize];
+    vector< vector<LawnCoordinate> > lawnCoordList;
+    //vector< vector<LawnCoordinate> > lawnCoordList(xSize, vector<LawnCoordinate>());
+
+    lawnCoordList.resize(xSize);
+    for(int j=0;j<xSize;j++){
+        lawnCoordList[j].resize(ySize);
+    }
+
+    for(int it=0; it < (int)gpsList.size();  ++it){
         tempX = gpsList.at(it)[0];
         tempY = gpsList.at(it)[1];
 
@@ -119,10 +133,41 @@ void QuadTree::build(vector<double[2]> gpsList)
 
     //STEP 4 - Build quad tree
 
-    this->map = *(this->buildTree(*lawnCoordList));
+
+    //we already have the bottom layer, which is lawnCoordList.  This needs to be turned into the bottom of the quad tree
+
+    vector<vector<QuadTree> > treeBase;
+    treeBase.resize((int)(xSize/2));
+    for(int j=0;j<((int)xSize/2);j++){
+        lawnCoordList[j].resize(((int)ySize/2));
+    }
+    for(int j=0;j < (int)lawnCoordList[j].size();j+=2){
+
+        for(int i=0;i < (int)lawnCoordList.size();i+=2){
+            //we look at the coord list in blocks of 4 at a time
+            (treeBase[i/2][j/2]).leafNW = lawnCoordList[i][j];
+            (treeBase[i/2][j/2]).leafNE = lawnCoordList[i+1][j];
+            (treeBase[i/2][j/2]).leafSW = lawnCoordList[i][j+1];
+            (treeBase[i/2][j/2]).leafSE = lawnCoordList[i+1][j+1];
+        }
+    }
+
+    //vector<vector<QuadTree>> currentMapLevel = buildTreeBase(lawnCoordList);
+
+    bool mapMade = false;
+    while(!mapMade){
+        //when our made is made, mapMade is set to true and we will exit the loop
+        //we need to create a new array to hold the current level.  This will need to be purged after every level
+
+        //need to send the current level and will receive back the next current level
+
+    }
+
+
 
 
 }
-QuadTree* QuadTree::buildTree(LawnCoordinate *lCList){
-}
 
+//vector<vector<QuadTree>> buildTreeBase(vector<vector<LawnCoordinate>> &cordList){
+
+//}

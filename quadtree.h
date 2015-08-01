@@ -21,7 +21,9 @@ public:
     int obstacle;
     QuadTree();
     void build(std::vector<double [2]>);
-    QuadTree* buildTree(LawnCoordinate*);
+    QuadTree** buildTree(vector<vector<QuadTree> >);
+    void buildTreeBase(vector<vector<LawnCoordinate> >*);
+    //vector<vector<QuadTree>> buildTreeBase(vector<vector<LawnCoordinate>>&);
     //void build(vector<vector<LawnCoordinate>>);
     //QuadTree buildTree(LawnCoordinate[][]);
     //vector<vector<QuadTree>> grow(vector<vector<QuadTree>>);
