@@ -6,7 +6,7 @@ LawnMap::LawnMap()
     //not used
 }
 
-LawnMap::LawnMap(vector<LawnCoordinate> vList){
+/*LawnMap::LawnMap(vector<LawnCoordinate> vList){
     //this needs to take the initial boundary coordinates and generate a map w/ them
     //grab largest and lowest values for Lat and Lon
     double highLat;
@@ -87,7 +87,7 @@ LawnMap::LawnMap(vector<LawnCoordinate> vList){
     }
     //map should be generated
 }
-
+*/
 int LawnMap::boundaryCheck(LawnCoordinate location)
 {
         //This should check the map and ensure that the current position is in bounds.

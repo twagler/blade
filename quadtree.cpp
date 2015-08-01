@@ -33,7 +33,7 @@ QuadTree::QuadTree()
 /*
  * builds the quadtree
  */
-void QuadTree::build(vector<double[2]> gpsList)
+void QuadTree::build(std::vector<std::pair<double,double> > gpsList)
 {
 
     /*    This consists of 4 steps:
@@ -67,8 +67,9 @@ void QuadTree::build(vector<double[2]> gpsList)
 
 
     //set all defaults to first entry in list
-    tempX = gpsList.at(0)[0];
-    tempY = gpsList.at(0)[1];
+
+    tempX = gpsList[0].first;
+    tempY = gpsList[0].second;
 
     maxX = tempX;
     minX = tempX;
@@ -76,8 +77,8 @@ void QuadTree::build(vector<double[2]> gpsList)
     minY = tempY;
 
     for(int it=0;it < (int)gpsList.size(); ++it){
-        tempX = gpsList.at(it)[0];
-        tempY = gpsList.at(it)[1];
+        tempX = gpsList[it].first;
+        tempY = gpsList[it].second;
         if( tempX > maxX) {
             maxX = tempX;
         }
@@ -110,7 +111,7 @@ void QuadTree::build(vector<double[2]> gpsList)
     int ySize = (int)((maxY-minY)*1000000);
 
     //vector<LawnCoordinate> lawnCoordList[xSize];
-    vector< vector<LawnCoordinate> > lawnCoordList;
+    std::vector< std::vector<LawnCoordinate> > lawnCoordList;
     //vector< vector<LawnCoordinate> > lawnCoordList(xSize, vector<LawnCoordinate>());
 
     lawnCoordList.resize(xSize);
@@ -119,8 +120,8 @@ void QuadTree::build(vector<double[2]> gpsList)
     }
 
     for(int it=0; it < (int)gpsList.size();  ++it){
-        tempX = gpsList.at(it)[0];
-        tempY = gpsList.at(it)[1];
+        tempX = gpsList[it].first;
+        tempY = gpsList[it].second;
 
         lawnCoordList[(int)((maxX-tempX))][(int)(maxY-tempY)].Latitude = tempX;
         lawnCoordList[(int)(maxX-tempX)][(int)(maxY-tempY)].Longitude = tempY;
@@ -136,7 +137,7 @@ void QuadTree::build(vector<double[2]> gpsList)
 
     //we already have the bottom layer, which is lawnCoordList.  This needs to be turned into the bottom of the quad tree
 
-    vector<vector<QuadTree> > treeBase;
+    std::vector<std::vector<QuadTree> > treeBase;
     treeBase.resize((int)(xSize/2));
     for(int j=0;j<((int)xSize/2);j++){
         treeBase[j].resize(((int)ySize/2));
@@ -156,7 +157,7 @@ void QuadTree::build(vector<double[2]> gpsList)
     ySize = treeBase[0].size();
     //vector<vector<QuadTree>> currentMapLevel = buildTreeBase(lawnCoordList);
 
-    vector<vector<QuadTree> > holdingLevel = treeBase;
+    std::vector<std::vector<QuadTree> > holdingLevel = treeBase;
 
     while(xSize>2 && ySize>2){
         //when our quad tree is made, we will exit the loop
@@ -165,7 +166,7 @@ void QuadTree::build(vector<double[2]> gpsList)
         xSize/=2;
         ySize/=2;
 
-        vector<vector<QuadTree> > currentLevel;
+        std::vector<std::vector<QuadTree> > currentLevel;
         currentLevel.resize((int)(xSize));
 
         for(int j=0;j<((int)xSize);j++){

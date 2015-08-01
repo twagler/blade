@@ -10,7 +10,7 @@ public:
     QuadTree* SW;
     QuadTree* SE;
     QuadTree* parent;
-    vector<vector<QuadTree>> map;
+    //vector<vector<QuadTree> > map;
     int quadrant;
     LawnCoordinate leafNW;
     LawnCoordinate leafNE;
@@ -20,9 +20,9 @@ public:
     int boundary;
     int obstacle;
     QuadTree();
-    void build(std::vector<double [2]>);
-    QuadTree** buildTree(vector<vector<QuadTree> >);
-    void buildTreeBase(vector<vector<LawnCoordinate> >*);
+    void build(std::vector<std::pair<double, double> >);
+    //QuadTree** buildTree(vector<vector<QuadTree> >);
+    //void buildTreeBase(vector<vector<LawnCoordinate> >*);
     //vector<vector<QuadTree>> buildTreeBase(vector<vector<LawnCoordinate>>&);
     //void build(vector<vector<LawnCoordinate>>);
     //QuadTree buildTree(LawnCoordinate[][]);

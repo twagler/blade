@@ -1,7 +1,7 @@
 #include <vector>
 #include <time.h>
 #include "gps.h"
-#include "mower.h"
+//#include "mower.h"
 #ifndef LAWNMAP_H
 #define LAWNMAP_H
 
@@ -29,7 +29,7 @@ class LawnMap
 {
 public:
     LawnMap();
-    LawnMap(vector<LawnCoordinate>);
+    //LawnMap(vector<LawnCoordinate>);
     int boundaryCheck(LawnCoordinate);
     int atWaypoint(LawnCoordinate);
     LawnCoordinate atCoordinate(GPS);
@@ -39,9 +39,9 @@ public:
     //bool lineGood(LawnCoordinate, LawnCoordinate);
     bool lineGood(int, int, int, int);
 
-    vector<LawnCoordinate[4]> boustrophedons; //vector containing known boustrophedons.
+    //vector<LawnCoordinate[4]> boustrophedons; //vector containing known boustrophedons.
     //Each boustrophendon has 4 corners, each with an lat and lon component
-    vector< vector<LawnCoordinate> > map;
+    std::vector<std::vector<LawnCoordinate> > map;
     int LatSize;
     int LonSize;
     void setCurrentGPS(double x, double y);
