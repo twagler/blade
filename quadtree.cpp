@@ -139,7 +139,7 @@ void QuadTree::build(vector<double[2]> gpsList)
     vector<vector<QuadTree> > treeBase;
     treeBase.resize((int)(xSize/2));
     for(int j=0;j<((int)xSize/2);j++){
-        lawnCoordList[j].resize(((int)ySize/2));
+        treeBase[j].resize(((int)ySize/2));
     }
     for(int j=0;j < (int)lawnCoordList[j].size();j+=2){
 
@@ -152,22 +152,53 @@ void QuadTree::build(vector<double[2]> gpsList)
         }
     }
 
+    xSize = treeBase.size();
+    ySize = treeBase[0].size();
     //vector<vector<QuadTree>> currentMapLevel = buildTreeBase(lawnCoordList);
 
-    bool mapMade = false;
-    while(!mapMade){
-        //when our made is made, mapMade is set to true and we will exit the loop
+    vector<vector<QuadTree> > holdingLevel = treeBase;
+
+    while(xSize>2 && ySize>2){
+        //when our quad tree is made, we will exit the loop
         //we need to create a new array to hold the current level.  This will need to be purged after every level
 
-        //need to send the current level and will receive back the next current level
+        xSize/=2;
+        ySize/=2;
 
+        vector<vector<QuadTree> > currentLevel;
+        currentLevel.resize((int)(xSize));
+
+        for(int j=0;j<((int)xSize);j++){
+            currentLevel[j].resize(((int)ySize));
+        }
+
+        for(int j=0;j < (int)lawnCoordList[j].size();j+=2){
+
+            for(int i=0;i < (int)lawnCoordList.size();i+=2){
+            //we look at the coord list in blocks of 4 at a time
+            (currentLevel[i/2][j/2]).NW = &holdingLevel[i][j];
+            (currentLevel[i/2][j/2]).NE = &holdingLevel[i+1][j];
+            (currentLevel[i/2][j/2]).SW = &holdingLevel[i][j+1];
+            (currentLevel[i/2][j/2]).SE = &holdingLevel[i+1][j+1];
+            holdingLevel[i][j].parent = &currentLevel[i/2][j/2];
+            holdingLevel[i+1][j].parent = &currentLevel[i/2][j/2];
+            holdingLevel[i][j+1].parent = &currentLevel[i/2][j/2];
+            holdingLevel[i+1][j+1].parent = &currentLevel[i/2][j/2];
+            }
+
+        }
+        holdingLevel = currentLevel;
     }
 
 
-
+    //Tree built.  Should have four items left
+    this->NW = &holdingLevel[0][0];
+    this->NE = &holdingLevel[1][0];
+    this->SW = &holdingLevel[0][1];
+    this->SE = &holdingLevel[1][1];
+    holdingLevel[0][0].parent = this;
+    holdingLevel[1][0].parent = this;
+    holdingLevel[0][1].parent = this;
+    holdingLevel[1][1].parent = this;
 
 }
-
-//vector<vector<QuadTree>> buildTreeBase(vector<vector<LawnCoordinate>> &cordList){
-
-//}
