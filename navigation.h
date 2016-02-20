@@ -5,14 +5,17 @@
 
 #include <QObject>
 #include <QtPositioning/QGeoCoordinate>
+#include <QDebug>
 
 class Navigation : public QObject
 {
     Q_OBJECT
 public:
     explicit Navigation(QObject *parent = 0);
+    void Init();
 
 private:
+    bool startup;
     float kP, kI, kD;
     QGeoCoordinate starting_coordinate, destination_coordinate;
 
@@ -30,9 +33,10 @@ private:
           current_distance_to_starting_coordinate,
           current_path_error;
 signals:
-
+    void request_coordinate();
 public slots:
     void CalculcateCorrection(QGeoCoordinate);
+    void received_waypoint(QGeoCoordinate);
 };
 
 #endif // NAVIGATION_H

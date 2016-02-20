@@ -5,6 +5,7 @@
 #include "networkserver.h"
 #include "gps_receiver.h"
 #include "navigation.h"
+#include "mappingservice.h"
 
 class MainController : public QObject
 {
@@ -17,6 +18,7 @@ private:
     MyServer myNetworkServer;
     GPS_receiver myGPS_recevier;
     Navigation myNavigator;
+    MappingService myMap;
 
 signals:
 

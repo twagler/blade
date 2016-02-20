@@ -42,8 +42,14 @@ MainController::MainController(QObject *parent) : QObject(parent)
 
 void MainController::init()
 {
+
+
+    connect(&myGPS_recevier, SIGNAL(publish_update(QGeoCoordinate)), &myNavigator, SLOT(CalculcateCorrection(QGeoCoordinate)));
+    connect(&myNavigator, SIGNAL(request_coordinate()), &myMap, SLOT(Request_Waypoint_Received()));
+    connect(&myMap, SIGNAL(send_waypoint(QGeoCoordinate)), &myNavigator, SLOT(received_waypoint(QGeoCoordinate)));
+
+    myNavigator.Init();
     myNetworkServer.startServer();
     myGPS_recevier.init();
 
-    connect(&myGPS_recevier, SIGNAL(publish_update(QGeoCoordinate)), &myNavigator, SLOT(CalculcateCorrection(QGeoCoordinate)));
 }
